@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">환율모니</string>
+    <string name="graph_datavisible">Data Visible</string>
+    <string name="graph_addlinevisible">AddLine Visible</string>
+    <string name="hello_world">Hello world!</string>
+
+    <string name="currency">미국 USD</string>
+    <string name="converted_value">1,150.00 원</string>
+    <string name="span">오늘</string>
+    <string name="date">2015년7월20일</string>
+    <string name="seek_3year">3년</string>
+    <string name="seek_year">1년</string>
+    <string name="seek_halfyear">6개월</string>
+    <string name="seek_month">1개월</string>
+    <string name="seek_yesterday">어제</string>
+    <string name="seek_today">오늘</string>
+    <string name="title_activity_bank">BankActivity</string>
+    <string name="action_settings">Settings</string>
+</resources>

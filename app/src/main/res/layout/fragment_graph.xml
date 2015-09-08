@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivityFragment"
+    android:weightSum="1"
+    android:clickable="true"
+    android:screenOrientation="portrait">
+
+
+    <ImageButton
+        android:layout_width="25dp"
+        android:layout_height="20dp"
+        android:id="@+id/btnRefresh"
+        android:layout_gravity="right"
+        android:layout_weight="0.04"
+        android:background="@mipmap/ic_refresh" />
+
+    <LinearLayout
+        android:id="@+id/topLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:layout_weight="0.08">
+
+        <Button
+            android:id="@+id/btnCurrency"
+            android:layout_centerHorizontal="true"
+            android:layout_height="36dp"
+            android:layout_width="wrap_content"
+            android:textSize="26dp"
+
+            android:textColor="#ff0066b4"
+            android:text="@string/currency"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_gravity="center"
+            android:background="@drawable/selector"
+            android:gravity="bottom"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp" />
+
+        <TextView
+            android:id="@+id/tvConverted_value"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="30dp"
+            android:textColor="#ff0066b4"
+            android:text="@string/converted_value"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="10dp"
+            android:textColor="#ff0066b4"
+            android:text="@string/converted_value"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/middleLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_weight="0.92"
+        android:weightSum="1">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/exchangechart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tvConverted_value"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginRight="15dp"
+            android:layout_above="@+id/seekBarDays"
+            android:layout_weight="1.30" />
+
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/seekBarDays"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="1000"
+        android:progress="1000"
+        android:splitTrack="false"
+        android:layout_marginRight="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:id="@+id/botomLayout"
+        android:textAlignment="center"
+        android:longClickable="false">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_weight="0.25"
+            android:text="@string/seek_3year"
+            android:id="@+id/tv3Year"
+            android:gravity="center|left" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_weight="0.25"
+            android:text="@string/seek_year"
+            android:id="@+id/tvYear"
+            android:gravity="center"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_weight="0.25"
+            android:text="@string/seek_halfyear"
+            android:id="@+id/tvHalfyear"
+            android:gravity="center"
+            android:layout_marginLeft="40dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/seek_month"
+            android:layout_weight="0.25"
+            android:id="@+id/tvMonth"
+            android:gravity="center|end" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvAd"
+        android:layout_height="80dp"
+        android:layout_width="wrap_content"
+        android:textSize="10dp"
+        android:textColor="#ff0066b4"
+        android:text="이곳은 광고 영역 입니다."
+        android:gravity="center_vertical|center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_gravity="center" />
+
+
+</LinearLayout>

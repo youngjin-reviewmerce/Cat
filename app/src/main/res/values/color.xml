@@ -1,0 +1,19 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<resources>
+<color name = "pressed1">#ffffffff</color>
+<color name = "pressed2">#ffffffff</color>
+
+<color name = "focused1">#ff0000</color>
+<color name = "focused2">#ff0000</color>
+
+<color name = "default1">#00ff0000</color>
+<color name = "default2">#00ff0000</color>
+
+<color name = "stroke">#00000000</color>
+
+<color name = "btnReviewmerce">#ff0066b4</color>
+
+<color name = "item_color_0">#ff00ff00</color>
+
+    <color name = "item_color_1">#ff22ff22</color>
+</resources>
