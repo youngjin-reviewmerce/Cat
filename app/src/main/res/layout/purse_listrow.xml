@@ -1,0 +1,51 @@
+<TableLayout
+    android:id="@+id/layoutPurseRow"
+    android:stretchColumns="0,1,2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffeeeeee"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TableRow>
+    <TextView
+        android:id="@+id/tvPurseRow1"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:maxLength="15"
+        android:gravity="center"
+        android:textColor="#000000"
+        android:singleLine="true"
+        android:background="#ffffff"
+        />
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/purse_topheader"
+        android:id="@+id/tvPurseRow2"
+        android:gravity="center"
+        android:layout_marginLeft="5dp"
+        android:textColor="#000000"
+        android:maxLength="15"
+        android:singleLine="true"
+        android:background="#ffffff"/>
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/tvPurseRow3"
+        android:gravity="right"
+        android:layout_marginLeft="5dp"
+        android:textColor="#000000"
+        android:maxLength="15"
+        android:singleLine="true"
+        android:background="#ffffff"/>
+    </TableRow>
+</TableLayout>
+
+

@@ -1,0 +1,26 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/layoutPurseHeader"
+    >
+    <ImageView
+        android:id="@+id/ivPurseimg"
+        android:layout_height="20dp"
+        android:layout_width="fill_parent"
+        android:src="@drawable/header_one"
+        android:scaleType="fitXY"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_weight="0.25"
+        android:text="@string/purse_topheader"
+        android:id="@+id/tvPurseTitle"
+        android:gravity="center"
+        android:layout_marginLeft="40dp"
+        android:textColor="#ffff00" />
+
+</FrameLayout>
+

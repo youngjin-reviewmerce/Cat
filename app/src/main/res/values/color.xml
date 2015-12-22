@@ -16,4 +16,15 @@
 <color name = "item_color_0">#ff00ff00</color>
 
     <color name = "item_color_1">#ff22ff22</color>
+    <color name="red">#ff00</color>
+
+    <color name="green">#f0f0</color>
+
+    <color name="blue">#f00f</color>
+
+    <color name="white">#ffff</color>
+
+    <color name="black">#f000</color>
+    <color name="lightgray">#ffeeeeee</color>
+
 </resources>

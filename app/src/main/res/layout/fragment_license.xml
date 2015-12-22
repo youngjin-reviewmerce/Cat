@@ -1,0 +1,45 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="com.reviewmerce.exchange.BankActivityFragment"
+    android:clickable="true"
+    android:id="@+id/mainLayout_license"
+    >
+
+
+    <ImageView
+        android:id="@+id/ivHeader_license"
+        android:layout_height="20dp"
+        android:layout_width="fill_parent"
+        android:src="@drawable/header_one"
+        android:scaleType="fitXY"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_weight="0.25"
+        android:text="close"
+        android:id="@+id/tvTitle_license"
+        android:gravity="right"
+        android:textColor="#ffff00"
+        android:layout_gravity="right"
+        android:layout_marginRight="30dp" />
+
+    <TextView
+        android:id="@+id/tvText_license"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+
+        android:scaleType="fitXY"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp" />
+
+
+
+
+</FrameLayout>

@@ -1,0 +1,28 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.reviewmerce.exchange.BankActivityFragment"
+    android:clickable="true"
+    android:id="@+id/mainLayout_purse_result"
+    >
+    <TextView
+        android:id="@+id/tvPurseResultRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:background="#ff1f6ba9"
+        />
+    <TextView
+        android:id="@+id/tvPurseResultRow2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/purse_topheader"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:background="#ff5894bf"/>
+</FrameLayout>
