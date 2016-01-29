@@ -4,6 +4,7 @@ package com.reviewmerce.exchange.custom;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ import com.reviewmerce.exchange.R;
 import com.reviewmerce.exchange.commonData.ExchangeData;
 import com.reviewmerce.exchange.publicClass.ExchangeDataLab;
 import com.reviewmerce.exchange.publicClass.LiveDataLab;
+import com.reviewmerce.exchange.publicClass.NationDataLab;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,17 +32,24 @@ import java.util.Date;
  */
 public class MyMarkerView extends MarkerView {
     GlobalVar mGlobalVar=null;
+    NationDataLab mNationLab = null;
     private TextView tvContent;
     private RelativeLayout layout;
+    private ImageView ivBack;
     ExchangeDataLab mExchangeLab = null;
     LiveDataLab mLiveDataLab = null;
+    Context mAppContext=null;
     private ArrayList<ExchangeData> mDataArray=null;
+
     public MyMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
+        mAppContext = context;
         mExchangeLab = ExchangeDataLab.get(null);
         mLiveDataLab = LiveDataLab.get(null);
+        mNationLab = NationDataLab.get(null);
         tvContent = (TextView) findViewById(R.id.tvContent);
         layout = (RelativeLayout) findViewById(R.id.markerLayout);
+        ivBack = (ImageView)findViewById(R.id.ivImageview);
         mGlobalVar = GlobalVar.get();
     }
 
@@ -63,7 +72,7 @@ public class MyMarkerView extends MarkerView {
                     sString = mDataArray.get(index).getDate();
                 else if(index == mDataArray.size())
                 {
-                    ExchangeData ex = mLiveDataLab.getLiveCurrencyData(mGlobalVar.getCurrencyCodeInEng());
+                    ExchangeData ex = mLiveDataLab.getLiveCurrencyData(mNationLab.getCurrencyCodeInEng());
                     sString = ex.getDate();
                 }
                 else
@@ -108,7 +117,7 @@ public class MyMarkerView extends MarkerView {
     @Override
     public void draw(Canvas canvas, float posx, float posy) {
 
-        layout.setBackgroundResource(mGlobalVar.getGraphBubbleId());
+        ivBack.setImageBitmap(mNationLab.getgGraphBubbleBitmap());
         posx += (float)this.getXOffset(posx);
         posy += (float)this.getYOffset(posy);
         int height = canvas.getHeight();

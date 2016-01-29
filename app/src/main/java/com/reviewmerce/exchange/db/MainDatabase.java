@@ -112,7 +112,9 @@ public class MainDatabase {
                 + BasicInfo.TABLE_MAIN_NATIONCODE  + " STRING, "
                 + BasicInfo.TABLE_MAIN_PERIOD  + " INTEGER, "
                 + BasicInfo.TABLE_MAIN_EXCHANGETYPE  + " STRING, "
-                + BasicInfo.TABLE_MAIN_NETWORKMODE  + " BOOLEAN"
+                + BasicInfo.TABLE_MAIN_NETWORKMODE  + " BOOLEAN, "
+                + BasicInfo.TABLE_MAIN_EXTANDPAGE  + " INTEGER"
+
                 + " );";
         //   create table exchange_rate (DATE DATE NOT NULL PRIMARY KEY, VALUE INTEGER, DIGIT INTEGER);
         try {
@@ -145,7 +147,39 @@ public class MainDatabase {
                 + BasicInfo.TABLE_MAIN_NATIONCODE  + " STRING, "
                 + BasicInfo.TABLE_MAIN_PERIOD  + " INTEGER, "
                 + BasicInfo.TABLE_MAIN_EXCHANGETYPE  + " STRING, "
-                + BasicInfo.TABLE_MAIN_NETWORKMODE  + " BOOLEAN"
+                + BasicInfo.TABLE_MAIN_NETWORKMODE  + " BOOLEAN, "
+                + BasicInfo.TABLE_MAIN_EXTANDPAGE  + " INTEGER"
+                + " );";
+        //   create table exchange_rate (DATE DATE NOT NULL PRIMARY KEY, VALUE INTEGER, DIGIT INTEGER);
+        try {
+            Log.e(TAG, "CREATE_SQL");
+            db.execSQL(CREATE_SQL);
+        } catch(Exception ex) {
+            Log.e(TAG, "Exception in CREATE_SQL", ex);
+        }
+    }
+    public void delete_createTable_CalcInfo()
+    {
+        String sTable = "calc";
+        println("creating database [" + BasicInfo.MAIN_DATABASE_NAME + "].");
+
+        // TABLE_MEMO
+        println("creating table [" + sTable + "].");
+
+        // drop existing table
+        String DROP_SQL = "drop table if exists " + sTable;
+        //String DROP_SQL = "drop table if exists USD";
+        try {
+            db.execSQL(DROP_SQL);
+        } catch(Exception ex) {
+            Log.e(TAG, "Exception in DROP_SQL", ex);
+        }
+//*/
+        // create table
+        String CREATE_SQL = "create table " + sTable + " ("
+                + BasicInfo.TABLE_CALC_VALUE  + " STRING, "
+                + BasicInfo.TABLE_CALC_COST  + " STRING, "
+                + BasicInfo.TABLE_CALC_TOTAL  + " STRING"
                 + " );";
         //   create table exchange_rate (DATE DATE NOT NULL PRIMARY KEY, VALUE INTEGER, DIGIT INTEGER);
         try {

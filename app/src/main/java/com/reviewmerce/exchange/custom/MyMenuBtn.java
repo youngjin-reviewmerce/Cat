@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.reviewmerce.exchange.GlobalVar;
+import com.reviewmerce.exchange.publicClass.NationDataLab;
 
 /**
  * Custom implementation of the MarkerView.
@@ -21,9 +22,12 @@ public class MyMenuBtn extends View {
 
     int m_nWidth = 80;
     int m_nHeight = 100;
-
+    Context mAppContext=null;
+    NationDataLab mNationLab = null;
     public MyMenuBtn(Context ct) {
         super(ct);
+        mAppContext = ct;
+        mNationLab = NationDataLab.get(null);
     }
     public MyMenuBtn(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -37,11 +41,15 @@ public class MyMenuBtn extends View {
         drawIcon(canvas);
     }
     private void drawIcon(Canvas canvas) {
-        GlobalVar gv = GlobalVar.get();
+
         m_nWidth = this.getWidth();
         m_nHeight = this.getHeight();
         mPaint = new Paint();
-        mPaint.setColor(gv.getGraphColor());
+        if(mNationLab == null)
+            mNationLab = NationDataLab.get(null);
+        if(mNationLab != null) {
+            mPaint.setColor(mNationLab.getGraphColor());
+        }
         mPaintEraser = new Paint();
         mPaintEraser.setColor(Color.parseColor("#00000000"));
         int nHeight = m_nHeight / 10;

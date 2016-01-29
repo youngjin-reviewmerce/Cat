@@ -11,6 +11,9 @@ import com.reviewmerce.exchange.commonData.ExchangeData;
 import com.reviewmerce.exchange.db.BankDatabase;
 import com.reviewmerce.exchange.db.PurseDatabase;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,12 +33,13 @@ public class BankDataLab {
     private static BankDataLab sBankDataLab;
     public static BankDatabase mBankDB = null;
     private boolean mDBisOpened=false;
-    GlobalVar mGlobalVar=null;
+    NationDataLab mNationLab=null;
+    GlobalVar mGlobalVar = null;
     public static BankDataLab get(Context c) {
-        if (sBankDataLab == null) {
-            sBankDataLab = new BankDataLab(c.getApplicationContext());
-        }
-        return sBankDataLab;
+            if (sBankDataLab == null) {
+                sBankDataLab = new BankDataLab(c.getApplicationContext());
+            }
+            return sBankDataLab;
     }
     ////////////////////////////////////////////////////////////////////////////
 
@@ -50,6 +54,7 @@ public class BankDataLab {
     public String mRepresentBank, mRepresentDate, mRepresentTime;
     public BankDataLab(Context appContext) {
         if(appContext != null) {
+            mNationLab = NationDataLab.get(null);
             mGlobalVar = GlobalVar.get();
             mAppContext = appContext;
             initData();
@@ -67,7 +72,7 @@ public class BankDataLab {
         } else {
             Log.d(BasicInfo.TAG, "exchange database is not open.");
         }
-        mBankDB.createTable(mGlobalVar.getCurrencyCodeInEng());
+        mBankDB.createTable(mNationLab.getCurrencyCodeInEng());
     }
     private void excuteSQL_getInitData() {
 
@@ -107,6 +112,89 @@ public class BankDataLab {
         }
         return -1;
     }
+    public void jsonToData(String sResult)
+    {
+        JSONObject json = null;
+        ArrayList<BankData> AddBankDataArray = new ArrayList<BankData>();
+        String sDate, sTime, sBank, sBasicRates, sCashBuying, sCashSelling,
+                sStransferSending, sStransferReceiving, sCheckBuying, sCheckSelling;
+
+        try {
+            json = new JSONObject(sResult);
+            JSONArray jsonArray = json.getJSONArray("exchange_rates");
+            JSONObject j;
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                j = jsonArray.getJSONObject(i);
+                try {
+                    sDate = j.getString(BasicInfo.json_BANK_UPDATEDATE);      //key
+                }catch (Exception e) {
+                    continue;
+                }
+                try {
+                    sTime = j.getString(BasicInfo.json_BANK_UPDATETIME);
+                }catch (Exception e) {
+                    sTime = "000000";
+                }
+                try {
+                    sBank = j.getString(BasicInfo.json_BANK_BANK);        // 필수
+                }catch (Exception e) {
+                    continue;
+                }
+
+                try {
+                    sBasicRates = j.getString(BasicInfo.json_BANK_BASICRATES);
+                }catch (Exception e) {
+                    sBasicRates = "0";
+                }
+
+                try {
+                    sCashBuying = j.getString(BasicInfo.json_BANK_CASHBUYING);
+                }catch (Exception e) {
+                    sCashBuying = "0";
+                }
+
+                try {
+                    sCashSelling = j.getString(BasicInfo.json_BANK_CASHSELLING);
+                }catch (Exception e) {
+                    sCashSelling = "0";
+                }
+
+                try {
+                    sStransferSending= j.getString(BasicInfo.json_BANK_STRANSFERSENDING);
+                }catch (Exception e) {
+                    sStransferSending = "0";
+                }
+
+                try {
+                    sStransferReceiving = j.getString(BasicInfo.json_BANK_STRANSFERRECEIVING);
+                }catch (Exception e) {
+                    sStransferReceiving = "0";
+                }
+
+
+                try {
+                    sCheckBuying= j.getString(BasicInfo.json_BANK_CHECKBUYING);
+                }catch (Exception e) {
+                    sCheckBuying = "0";
+                }
+
+                try {
+                    sCheckSelling = j.getString(BasicInfo.json_BANK_CHECKSELLING);
+                }catch (Exception e) {
+                    sCheckSelling = "0";
+                }
+                BankData bd = new BankData(i,sDate,sTime,sBank,sBasicRates,
+                        sCashBuying,sCashSelling,sStransferSending,sStransferReceiving,sCheckBuying,sCheckSelling);
+
+                addData(bd);
+                AddBankDataArray.add(bd);
+
+            } // for
+        } catch (Exception e) {
+            Log.e("HTTP", e.toString());
+        }
+    }
     public void sortToSortedData()
     {
         mBankDataSortList.clear();
@@ -130,6 +218,9 @@ public class BankDataLab {
             Collections.sort(mBankDataSortList,new BankSortedCompareSmall());
         double dMinVal = .0f;
         i=0;
+
+        mRepresentBank = "지원하는 은행 없음";
+
         for (BankData sb : mBankDataSortList)
         {
             if(i==0)
@@ -233,6 +324,7 @@ public class BankDataLab {
             BasicInfo.mBankCode.clear();
 
         // 시중은행 및 많이 사용하는 금융기관
+        BasicInfo.mBankCode.put (0,"유럽중앙은행");
         BasicInfo.mBankCode.put (1,"한국은행");
         BasicInfo.mBankCode.put (2,"산업은행");
         BasicInfo.mBankCode.put (3,"기업은행");
@@ -322,10 +414,10 @@ public class BankDataLab {
         int nIndex = 0;
 
         try {
-            mBankDB.delete_createTable(mGlobalVar.getCurrencyCodeInEng());
+            mBankDB.delete_createTable(mNationLab.getCurrencyCodeInEng());
 
             for (BankData e : mBankData) {
-                String SQL = "insert or replace into "+ mGlobalVar.getCurrencyCodeInEng() + " values (" +
+                String SQL = "insert or replace into "+ mNationLab.getCurrencyCodeInEng() + " values (" +
                         Integer.toString(e.getBank()) + "," +
                         "\"" + e.getDate() + "\"," +
                         "\"" + e.getTime() + "\"," +
@@ -361,7 +453,7 @@ public class BankDataLab {
             openDatabase();
         }
         String SQL = "select * "
-                + "from " + mGlobalVar.getCurrencyCodeInEng();
+                + "from " + mNationLab.getCurrencyCodeInEng();
         Cursor c1;
         try {
 

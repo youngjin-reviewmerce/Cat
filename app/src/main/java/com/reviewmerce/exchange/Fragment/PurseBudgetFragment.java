@@ -123,7 +123,7 @@ public class PurseBudgetFragment extends baseOnebuyFragment {
                 }
             }
         };
-        mDataLab = PurseDataLab.get(getActivity());
+        mDataLab = PurseDataLab.get(null);
         initControlValue(v);
         testFunc();
 

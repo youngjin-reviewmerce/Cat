@@ -15,7 +15,18 @@
 
         android:scaleType="fitXY"/>
 
-
+    <TextView
+        android:id="@+id/tvConverted_value"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="20dp"
+        android:textColor="#ff0066b4"
+        android:gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_gravity="top|center_horizontal"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:text="" />
 
 
 

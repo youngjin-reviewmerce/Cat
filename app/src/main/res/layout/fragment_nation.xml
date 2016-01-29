@@ -1,0 +1,85 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/mainLayout_nation"
+    android:background="#00000000"
+    >
+    <ImageView
+        android:id="@+id/ivScreen"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:scaleType="fitXY"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            android:id="@+id/layout2"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:weightSum="1"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="1dp">
+
+            <TextView
+                android:id="@+id/tv_title_search"
+                android:layout_centerHorizontal="true"
+                android:layout_height="24dp"
+                android:layout_width="70dp"
+                android:textSize="20dp"
+                android:textColor="#ffffffff"
+                android:text="검색"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_gravity="left"
+                android:gravity="center_vertical"
+                android:layout_weight="0.12"
+                android:singleLine="true"
+                />
+
+            <EditText
+                android:id="@+id/tv_edit_search"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:text=""
+                android:textSize="12dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:background="#ffffffff"
+                android:weightSum="0.7"
+                android:gravity="center_vertical|right"
+                android:width="110dp"
+                android:singleLine="true"
+                android:maxLength="18"
+                android:typeface="sans"
+
+                />
+
+        </LinearLayout>
+        <com.reviewmerce.exchange.ListView.DndListView
+            android:layout_width="260dp"
+            android:layout_height="370dp"
+            android:id="@+id/list_country"
+            android:layout_centerHorizontal="true"
+            android:drawSelectorOnTop = "false"
+            android:fastScrollEnabled="true"
+            android:cacheColorHint="#00000000"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="40dp"
+            />
+        <ToggleButton
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="수정"
+            android:id="@+id/toggle_button"
+            android:layout_gravity="center_horizontal"
+            android:visibility="visible"/>
+    </LinearLayout>
+</FrameLayout>

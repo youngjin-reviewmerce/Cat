@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:weightSum="1"
+    android:id="@+id/item_layout_edit"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:background="#ffdddddd">
+
+    <CheckBox
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:text=" "
+        android:id="@+id/check_box_edit"
+        android:layout_gravity="right"
+        android:checked="false"
+         />
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:id="@+id/image_view_edit"
+        android:src="@drawable/sample"/>
+
+    <TextView
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:gravity="center|center_vertical"
+        android:text="country"
+        android:id="@+id/textView_country_edit" />
+
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:gravity="center|center_vertical"
+        android:text="value"
+        android:id="@+id/textView_value_edit" />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:gravity="right|center_vertical"
+        android:id="@+id/menu_circular_image_edit"
+        android:visibility="visible"
+        android:src="@drawable/menu_circular"
+
+        android:layout_gravity="right" />
+
+</LinearLayout>

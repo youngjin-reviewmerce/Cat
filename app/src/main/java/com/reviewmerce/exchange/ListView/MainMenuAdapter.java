@@ -87,4 +87,4 @@ public class MainMenuAdapter extends BaseAdapter {
         if(mItems.get(nPosition).getType()==0)
         mItems.get(nPosition).setIsChecked(bCheck);
         }
-        }
+    }

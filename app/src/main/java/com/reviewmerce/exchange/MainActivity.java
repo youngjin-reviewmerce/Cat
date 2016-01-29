@@ -45,12 +45,13 @@ import com.reviewmerce.exchange.Fragment.BankFragment;
 import com.reviewmerce.exchange.Fragment.CalcFragment;
 import com.reviewmerce.exchange.Fragment.GraphFragment;
 import com.reviewmerce.exchange.Fragment.LicenseFragment;
-import com.reviewmerce.exchange.Fragment.MenuFragment;
+import com.reviewmerce.exchange.Fragment.NationFragment;
 import com.reviewmerce.exchange.Fragment.PurseBudgetFragment;
 import com.reviewmerce.exchange.Fragment.PurseFragment;
 import com.reviewmerce.exchange.Fragment.TutorialFragment;
 import com.reviewmerce.exchange.Fragment.baseOnebuyFragment;
 import com.reviewmerce.exchange.ListView.MainMenuAdapter;
+import com.reviewmerce.exchange.commonData.Caculator;
 import com.reviewmerce.exchange.commonData.CurrencyItem;
 import com.reviewmerce.exchange.commonData.MenuData;
 import com.reviewmerce.exchange.commonData.NumberDigitObject;
@@ -65,15 +66,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Queue;
 
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
+import com.reviewmerce.exchange.publicClass.BankDataLab;
+import com.reviewmerce.exchange.publicClass.ExchangeDataLab;
+import com.reviewmerce.exchange.publicClass.LiveDataLab;
+import com.reviewmerce.exchange.publicClass.NationDataLab;
+import com.reviewmerce.exchange.publicClass.PurseDataLab;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class MainActivity extends FragmentActivity implements OnTouchListener, baseOnebuyFragment.FragmentChangeListener{
     GlobalVar mGlobalVar=null;
+    NationDataLab mNationDataLab=null;
+    boolean bFirstRun = false;
     private Tracker mTracker;
 //    private ViewFlipper m_viewFlipper;
     private int m_nPreTouchPosX = 0;
@@ -86,6 +95,8 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
     private static PurseBudgetFragment mFragmengBudgetPurse;
     private static TutorialFragment mFragmentTutorial;
     private static LicenseFragment mFragmentLicense;
+
+    private static NationFragment mFragmentNation;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private int mDialogType;
@@ -98,87 +109,34 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
     {
         saveData();
     }
-    public void chgFragment(int nMyIndex, int nDirect)
-    {
-        if(nMyIndex == 5)
-        {
-            mDrawerLayout.openDrawer(Gravity.LEFT);
-        }
-        else if (nMyIndex ==6)
-        {
-            final FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
-            mDialogType = 0;
-            switch (mGlobalVar.getScreenPage()) {
-                case 0:             // Graph->
-                    transaction.replace(R.id.container, mFragmentGraph);
-                    break;
-                case 1:
-                    transaction.replace(R.id.container, mFragmentBank);
-                    break;
-                case 2:
-                    transaction.replace(R.id.container, mFragmentPurse);
-                    break;
-                case 3:
-                    transaction.replace(R.id.container, mFragmengBudgetPurse);
-                    break;
 
-            }
-            transaction.commit();
-        }
-        else {
-            if (nDirect >= 1) {
-                if (nMyIndex + 1 >= m_nMaxFragementCount) // index + 1 = count
-                {
-                    mGlobalVar.setScreenPage(0);
-                } else {
-                    mGlobalVar.setScreenPage(nMyIndex + 1);
-                }
-            } else {
-                if (nMyIndex - 1 < 0) // index + 1 = count
-                {
-                    mGlobalVar.setScreenPage(m_nMaxFragementCount - 1);
-                } else {
-                    mGlobalVar.setScreenPage(nMyIndex - 1);
-
-                }
-            }
-            saveData();
-            final FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
-            switch (mGlobalVar.getScreenPage()) {
-                case 0:             // Graph->
-                    transaction.replace(R.id.container, mFragmentGraph);
-                    break;
-                case 1:
-                    transaction.replace(R.id.container, mFragmentBank);
-                    break;
-                case 2:
-                    transaction.replace(R.id.container, mFragmentPurse);
-                    break;
-                case 3:
-                    transaction.replace(R.id.container, mFragmengBudgetPurse);
-                    break;
-
-            }
-            transaction.commit();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mGlobalVar = GlobalVar.get();
-        mDialogType = 0;
-//        copyAssetDb(this);
 
         if(checkInitApp(this)==false)
         {
             copyAssetDb(this,BasicInfo.DATABASE_NAME);
-            copyAssetDb(this,BasicInfo.LIVE_DATABASE_NAME);
+            copyAssetDb(this, BasicInfo.LIVE_DATABASE_NAME);
+            copyAssetDb(this, BasicInfo.NATION_DATABASE_NAME);
             CopyAssets("image/flag");
             CopyAssets("image/bar");
+            CopyAssets("image/background");
             CopyAssets("image/tutorial");
+            CopyAssets("image/bubble");
             saveAppVersion();
         }
+
+        mNationDataLab = NationDataLab.get(this);
+        BankDataLab bankDataLab = BankDataLab.get(this);
+        ExchangeDataLab exchangeDataLab = ExchangeDataLab.get(this);
+        LiveDataLab liveDataLab  = LiveDataLab.get(this);
+
+        PurseDataLab purseDataLab = PurseDataLab.get(this);
+        mGlobalVar = GlobalVar.get();
+        mDialogType = 0;
+//        copyAssetDb(this);
 
         // onebuy
         testFunc();
@@ -192,6 +150,7 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
         mTracker.enableAdvertisingIdCollection(true);
         String device_version;
         try {
+
             device_version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
 
         }
@@ -200,9 +159,6 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
             device_version = "";
             Log.e(BasicInfo.TAG,"App Version Err.");
         }
-        Log.i(BasicInfo.TAG, "Setting screen name: " + "GraphFragment");
-        mTracker.setScreenName("ver" + device_version);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
 //        ActionBar actionBar = getActionBar();
 //        actionBar.hide();
@@ -215,11 +171,12 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
         mFragmengBudgetPurse = new PurseBudgetFragment();
         mFragmentTutorial = new TutorialFragment();
         mFragmentLicense = new LicenseFragment();
+        mFragmentNation = new NationFragment();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
+        mDrawerList.setSelector(R.drawable.transparent_selector);
         // onebuy
         mDrawerList.setItemsCanFocus(false);
         mDrawerList.setChoiceMode(ListView.CHOICE_MODE_NONE);// .CHOICE_MODE_SINGLE);
@@ -234,19 +191,26 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
 
         if(savedInstanceState == null)
         {
-            switch(mGlobalVar.getScreenPage())
+            if(bFirstRun)
             {
-                case 0:
-                    getSupportFragmentManager().beginTransaction().add(R.id.container,  mFragmentGraph).commit();
-                    break;
-                case 1:
-                    getSupportFragmentManager().beginTransaction().add(R.id.container,  mFragmentBank).commit();
-                    break;
-                case 2:
-                    getSupportFragmentManager().beginTransaction().add(R.id.container,  mFragmentPurse).commit();
-                    break;
+                getSupportFragmentManager().beginTransaction().add(R.id.container, mFragmentTutorial).commit();
+                mDialogType = 1;
             }
-
+            else {
+                switch (mGlobalVar.getScreenPage()) {
+                    case 0:
+                        getSupportFragmentManager().beginTransaction().add(R.id.container, mFragmentGraph).commit();
+                        break;
+                    case 1:
+                        getSupportFragmentManager().beginTransaction().add(R.id.container, mFragmentBank).commit();
+                        break;
+                    case 2:
+                        getSupportFragmentManager().beginTransaction().add(R.id.container, mFragmentPurse).commit();
+                        break;
+                }
+                if((mGlobalVar.getExtandPage()&0x01)>0)
+                    runExtandFragment(3);
+            }
             //getSupportFragmentManager().beginTransaction().add(R.id.container,  mFragmentPurse).commit();
         }
         //testNoti();
@@ -334,6 +298,119 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
 
 
     }
+    public void returnDialog(int nType,String sInput)
+    {
+        switch (nType) {
+            case 0:             // Graph->
+                mFragmentGraph.OnDialogOkListener(sInput);
+                break;
+            case 1:
+                mFragmentBank.OnDialogOkListener(sInput);
+                break;
+            case 2:
+                mFragmentPurse.OnDialogOkListener(sInput);
+                break;
+            case 30:
+                mFragmentCalc.OnDialogOkListener(0,sInput);
+                break;
+            case 31:
+                mFragmentCalc.OnDialogOkListener(1,sInput);
+                break;
+
+        }
+    }
+    public void makeNationDialog(int nType)
+    {
+        try {
+                //               /*
+            BasicInfo.gStartTime = System.currentTimeMillis();
+                if(mFragmentNation.isRunning() == false) {
+                    android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+                    mFragmentNation = new NationFragment();
+                    mFragmentNation.setCallFragmentId(nType);
+                    String sz = "hi";
+                    mFragmentNation.show(fm, sz);
+                }
+        }
+        catch(Exception e)
+        {
+            Log.e(BasicInfo.TAG,"makeDialog Err");
+        }
+    }
+    public void chgFragment(int nMyIndex, int nDirect)
+    {
+        if(nMyIndex == 5)
+        {
+            mDrawerLayout.openDrawer(Gravity.LEFT);
+        }
+        else if (nMyIndex ==6)
+        {
+            final FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
+            mDialogType = 0;
+            switch (mGlobalVar.getScreenPage()) {
+                case 0:             // Graph->
+                    transaction.replace(R.id.container, mFragmentGraph);
+                    break;
+                case 1:
+                    transaction.replace(R.id.container, mFragmentBank);
+                    break;
+                case 2:
+                    transaction.replace(R.id.container, mFragmentPurse);
+                    break;
+                case 3:
+                    transaction.replace(R.id.container, mFragmengBudgetPurse);
+                    break;
+
+            }
+            transaction.commit();
+        }
+        else if (nMyIndex == 7)
+        {
+            final FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.container, mFragmentNation);
+            transaction.commit();
+
+        }
+        else {
+            if (nDirect >= 1) {
+                if (nMyIndex + 1 >= m_nMaxFragementCount) // index + 1 = count
+                {
+                    mGlobalVar.setScreenPage(0);
+                } else {
+                    mGlobalVar.setScreenPage(nMyIndex + 1);
+                }
+            } else {
+                if (nMyIndex - 1 < 0) // index + 1 = count
+                {
+                    mGlobalVar.setScreenPage(m_nMaxFragementCount - 1);
+                } else {
+                    mGlobalVar.setScreenPage(nMyIndex - 1);
+
+                }
+            }
+            saveData();
+            final FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
+            switch (mGlobalVar.getScreenPage()) {
+                case 0:             // Graph->
+                    transaction.replace(R.id.container, mFragmentGraph);
+                    break;
+                case 1:
+                    transaction.replace(R.id.container, mFragmentBank);
+                    break;
+                case 2:
+                    transaction.replace(R.id.container, mFragmentPurse);
+                    break;
+                case 3:
+                    transaction.replace(R.id.container, mFragmengBudgetPurse);
+                    break;
+
+            }
+            transaction.commit();
+
+        }
+
+    }
+
     private static final String PACKAGE_DIR = "/data/data/com.reviewmerce.exchange/databases";
     public boolean checkInitApp(Context ctx)
     {
@@ -352,6 +429,8 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
                 e.printStackTrace();
             }
         } catch (Exception e) {
+            //처음 실행시
+            bFirstRun = true;
             e.printStackTrace();
             return false;
         }
@@ -404,7 +483,7 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
             e.printStackTrace();
         }
     }
-    private void CopyAssets(String sFolder) {
+    public void CopyAssets(String sFolder) {
         AssetManager assetManager = getAssets();
         String[] files = null;
         String mkdir = null ;
@@ -448,6 +527,7 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
             }
         }
     }
+
     private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
@@ -461,9 +541,9 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
         boolean isOpen = mMainDB.open();
         if (isOpen) {
             mDBisOpened = true;
-            Log.d(BasicInfo.TAG, "exchange database is open.");
+            Log.d(BasicInfo.TAG, "main database is open.");
         } else {
-            Log.d(BasicInfo.TAG, "exchange database is not open.");
+            Log.d(BasicInfo.TAG, "main database is not open.");
         }
         mMainDB.createTable();
     }
@@ -488,10 +568,11 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
                 */
                 String SQL = "insert or replace into option" + " values (" +
                         Integer.toString(mGlobalVar.getScreenPage()) + "," +
-                        "\"" + mGlobalVar.getCurrencyCodeInEng() + "\"," +
+                        "\"" + mGlobalVar.getSelectCurrency().getCurrencyCodeInEng() + "\"," +
                         Integer.toString(mGlobalVar.getGraphPeriod()) + "," +
                         "\"" + mGlobalVar.getExchangeType() + "\"," +
-                        "\"" + Boolean.toString(mGlobalVar.getNetworkMode()) + "\"" +
+                        "\"" + Boolean.toString(mGlobalVar.getNetworkMode()) + "\"" + "," +
+                        Integer.toString(mGlobalVar.getExtandPage()) +
                         ")";
                 mMainDB.execSQL(SQL);
 
@@ -528,10 +609,11 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
             if (c1.getCount() <= 0)
                 return;
             mGlobalVar.setScreenPage(c1.getInt(0));
-            mGlobalVar.chgCurrency(c1.getString(1));
+            mNationDataLab.chgCurrency(c1.getString(1));
             mGlobalVar.setGraphPeriod(c1.getInt(2));
             mGlobalVar.setExchangeType(c1.getString(3));
             mGlobalVar.setNetworkMode(Boolean.valueOf(c1.getString(4)));
+            mGlobalVar.setExtandPage(c1.getInt(5));
             c1.close();
         }
         catch (Exception e)
@@ -557,19 +639,19 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
                     menuAdapter.notifyDataSetInvalidated();
                     break;
                 case 1:
-                    selectItem(1);
+                    runExtandFragment(1);
                     break;
                 case 2:
-                    selectItem(2);
+                    runExtandFragment(2);
                     break;
                 case 3:
-                    selectItem(3);
+                    runExtandFragment(3);
                     break;
             }
            // selectItem(position);
         }
     }
-    private void selectItem(int position) {
+    private void runExtandFragment(int position) {
         // Create a new fragment and specify the planet to show based on position
         // Insert the fragment by replacing any existing fragment
         final FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
@@ -585,17 +667,13 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
                 mDialogType = 2;
                 break;
             case 3:
-                switch(mGlobalVar.getScreenPage())
-                {
-                    case 0:
-                        mFragmentGraph.makeDialog();
-                        break;
-                    case 1:
-                        mFragmentBank.makeDialog();
-                        break;
-                    case 2:
-                        mFragmentPurse.makeDialog();
-                        break;
+                try {
+                    android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+                    mFragmentCalc = new CalcFragment();
+                    String sz = "hi";
+                    mFragmentCalc.show(fm, sz);
+                } catch (Exception e) {
+                    Log.e(BasicInfo.TAG, "makeDialog Err");
                 }
                 break;
         }
@@ -604,6 +682,8 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
         // Highlight the selected item, update the title, and close the drawer
         mDrawerLayout.closeDrawer(mDrawerList);
     }
+
+
     public void testNoti()
     {
         NotificationCompat.Builder mBuilder =
@@ -643,7 +723,6 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
         adapter.addItem(new MenuData(1,"모바일 데이터 사용",globalVar.getNetworkMode()));
         adapter.addItem(new MenuData(0, "튜토리얼", true));
         adapter.addItem(new MenuData(0,"라이센스 정보",true));
-
         adapter.addItem(new MenuData(0, "계산기", true));
 
         return adapter;
@@ -684,8 +763,63 @@ public class MainActivity extends FragmentActivity implements OnTouchListener, b
         obj2.delNumber(2);
         obj2.delNumber(1);
         Log.i(BasicInfo.TAG, obj2.toString());
-*/
+//
+        String sPostfix = "";
+        double dResult = .0f;
+        try {
+            sPostfix = Caculator.postfix("100*0.02");
+            dResult = Caculator.postfixCalc(sPostfix);
+        }catch (Exception e)
+        {
+            Log.d("MainActivity","TestFuncErr");
+        }
+        Log.i("MainActivity",String.valueOf(dResult));
+  //*/
+  /*
+        String param = "2*(3+4)*5";
+        Caculator cal = new Caculator();
+        Queue<String> que = cal.transformPostfix(param);
+        Double resultVal = cal.caculatePostfix(que);
+        Log.i("MainActivity",String.valueOf(resultVal));
+        */
 
+     //   /*  삼각
+        int nNum = 0;
+        for(int i=5985;i<=5985;i++)
+        {
+        //    int i=5985;
+            nNum = getTriangleNum(i);
+            nNum = getDivCount(nNum);
+            if(nNum > 500/2)
+                i++;
+            if(nNum > 500)
+                break;
+            Log.d("testF", String.format("%d\r\n", nNum));
+        }
+        Log.d("testF",String.format("result : %d\r\n",nNum));
+   //     */
+    }
+    public int getTriangleNum(int nCount)
+    {
+        int nRtnVal = nCount * (nCount+1) / 2;
+        return nRtnVal;
+    }
+    public int getDivCount(int nInput)
+    {
+        int nDivCount = 1;      // 기본
+        for(int i=2;i<nInput/2;i++)
+        {
+            if(nInput%i==0)
+            {
+                nDivCount++;
+                if(nInput/i>i)
+                {
+                    nDivCount++;
+                }
+            }
+        }
+        nDivCount++;  // 지꺼
+        return nDivCount;
     }
     public class BackPressCloseHandler {
 
