@@ -1,11 +1,11 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:clickable="true"
     android:id="@+id/purseLayout_budget"
-    android:background="#ffffff">
+    android:background="#ffeeeeee">
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
@@ -13,7 +13,7 @@
             android:id="@+id/ivHeader"
             android:layout_height="30dp"
             android:layout_width="fill_parent"
-            android:src="@drawable/header_one"
+            android:background="@color/shippingMainTheme"
             android:scaleType="fitXY"/>
         <TextView
             android:layout_width="wrap_content"
@@ -41,9 +41,9 @@
 
     <TableLayout
         android:id="@+id/Layout_1_1"
-        android:stretchColumns="1,2,3"
+        android:stretchColumns="2,3,4"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#ffeeeeee"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
@@ -53,28 +53,44 @@
 
         >
         <TableRow>
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_height="30dp"
+                android:layout_width="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_purse_date"
+                android:background="@color/shippingMainTheme"
+                android:id="@+id/iv_purse_budget_datetitle_icon"
+                android:layout_gravity="center_vertical"
+
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                />
         <TextView
             android:id="@+id/tv_purse_budget_datetitle"
             android:layout_height="match_parent"
-            android:layout_width="140dp"
+            android:layout_width="80dp"
             android:text="날짜"
             android:textSize="16dp"
+            android:textColor="#ffffff"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:background="#ffffffff"
             android:singleLine="true"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
+            android:background="@color/shippingMainTheme"
             />
         <TextView
             android:id="@+id/tv_purse_budget_date1"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:text="10/10"
-            android:textSize="16dp"
+            android:textSize="10dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:background="#ffffffff"
             android:singleLine="true"
             android:maxLength="30"
-            android:gravity="center_horizontal"/>
+            android:gravity="center_horizontal|center_vertical"/>
         <TextView
             android:id="@+id/tv_purse_budget_dateline"
             android:layout_width="match_parent"
@@ -83,26 +99,26 @@
             android:textSize="16dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:background="#ffffffff"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
             android:singleLine="true"/>
         <TextView
             android:id="@+id/tv_purse_budget_date2"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:text="10/20"
-            android:textSize="16dp"
+            android:textSize="10dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:background="#ffffffff"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
             android:maxLength="20"
             android:singleLine="true"/>
         </TableRow>
     </TableLayout>
     <TableLayout
         android:id="@+id/Layout_1_2"
-        android:stretchColumns="1"
+        android:stretchColumns="2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#ffeeeeee"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
@@ -112,27 +128,42 @@
 
         >
         <TableRow>
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_height="30dp"
+                android:layout_width="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_purse_value"
+                android:background="@color/shippingMainTheme"
+                android:id="@+id/iv_purse_budget_title_kor_icon"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                />
             <TextView
                 android:id="@+id/tv_purse_budget_title_kor"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_width="80dp"
                 android:text="예산(원화)"
                 android:textSize="16dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:background="#ffffffff"
-                android:weightSum="0.7"
-                android:gravity="center_horizontal"
-                android:width="140dp"
+                android:background="@color/shippingMainTheme"
+                android:gravity="center_horizontal|center_vertical"
+                android:width="80dp"
+                android:textColor="#ffffff"
                 android:singleLine="true"/>
 
-            <EditText
+            <com.reviewmerce.exchange.custom.WrapperEditText
                 android:id="@+id/et_purse_budget_value_kor"
-                android:layout_height="wrap_content"
-                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:textAlignment="center"
                 android:text=""
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:weightSum="0.7"
                 android:textSize="16dp"
-                android:gravity="right"
+                android:gravity="right|center_vertical"
                 android:background="#ffffffff"
                 android:singleLine="true"
                 />
@@ -141,9 +172,64 @@
     </TableLayout>
     <TableLayout
         android:id="@+id/Layout_1_3"
-        android:stretchColumns="1"
+        android:stretchColumns="2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffeeeeee"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="10dp"
+        android:paddingBottom="0dp"
+        android:shrinkColumns="0"
+        >
+        <TableRow>
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_height="30dp"
+                android:layout_width="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_purse_value"
+                android:background="@color/shippingMainTheme"
+                android:id="@+id/iv_purse_budget_title_icon"
+                android:layout_gravity="center_vertical"
+
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                />
+            <TextView
+                android:id="@+id/tv_purse_budget_title"
+                android:layout_height="match_parent"
+                android:text="예산"
+                android:textSize="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:background="@color/shippingMainTheme"
+                android:gravity="center_horizontal|center_vertical"
+                android:textColor="#ffffff"
+                android:width="80dp"
+
+                android:singleLine="true"/>
+
+            <com.reviewmerce.exchange.custom.WrapperEditText
+                android:id="@+id/et_purse_budget_value"
+                android:layout_height="match_parent"
+                android:layout_width="fill_parent"
+                android:text=""
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="16dp"
+                android:gravity="right|center_vertical"
+                android:background="#ffffffff"
+                android:singleLine="true"
+                />
+        </TableRow>
+    </TableLayout>
+    <TableLayout
+        android:id="@+id/Layout_1_4"
+        android:stretchColumns="2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="#ffeeeeee"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
@@ -152,27 +238,42 @@
         android:shrinkColumns="0"
         >
         <TableRow>
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_height="30dp"
+                android:layout_width="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_purse_nation"
+                android:background="@color/shippingMainTheme"
+                android:id="@+id/iv_purse_budget_nation_icon"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                />
             <TextView
-                android:id="@+id/tv_purse_budget_title"
-                android:layout_height="wrap_content"
-                android:text="예산"
+                android:id="@+id/tv_purse_budget_nation_title"
+                android:layout_height="match_parent"
+                android:layout_width="80dp"
+                android:text="국가"
                 android:textSize="16dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:background="#ffffffff"
-                android:weightSum="0.7"
-                android:gravity="center_horizontal"
-                android:width="140dp"
+                android:background="@color/shippingMainTheme"
+                android:gravity="center_horizontal|center_vertical"
+                android:width="80dp"
+                android:textColor="#ffffff"
                 android:singleLine="true"/>
 
-            <EditText
-                android:id="@+id/et_purse_budget_value"
-                android:layout_height="wrap_content"
-                android:layout_width="fill_parent"
+            <TextView
+                android:id="@+id/tv_purse_budget_nation"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
                 android:text=""
+                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:weightSum="0.7"
                 android:textSize="16dp"
-                android:gravity="right"
+                android:gravity="right|center_vertical"
                 android:background="#ffffffff"
                 android:singleLine="true"
                 />

@@ -65,24 +65,37 @@ public class PurseDataLab {
     private String mEndDate="";
     private ArrayList<PurseData> mPurseData;
     private double mBudget=.0f;
-    private String mCurrencyChar="";
+    private double mBudgetKRW=.0f;
+
+    private String mBudgetCurrency="";
     ///////////////////////////////////////////////////////////////////////////////////////
     // 데이터 set/ get
     public void setBudget(double dVal)
     {
         mBudget = dVal;
     }
+
     public double getBudget()
     {
         return mBudget;
     }
-    public void setCurrencyChar(String sVal)
+    public void setmBudgetKRW(double dVal)
     {
-        mCurrencyChar = sVal;
+        mBudgetKRW = dVal;
     }
-    public String getCurrencyChar()
+    public double getBudgetKRW()
     {
-        return mCurrencyChar;
+        return mBudgetKRW;
+    }
+    public void setBudgetCurrency(String sVal)
+    {
+        mBudgetCurrency = sVal;
+    }
+    public String getBudgetCurrency()
+    {
+        if(mBudgetCurrency.length()<=0)
+            return "USD";
+        return mBudgetCurrency;
     }
     public void setBeginDate(int nYear, int nMonth, int nDay)
     {
@@ -193,7 +206,7 @@ public class PurseDataLab {
     public void initData() {
 
         initPurseData();
-        loadPurseData_DB();
+
     }
     public void initPurseData() {
         mPurseData = new ArrayList<PurseData>();
@@ -223,8 +236,19 @@ public class PurseDataLab {
             else
                 mPurseData.clear();
 
-            excutePurseHeaderLoad();
-            excutePurseLoad();
+            try {
+                excutePurseHeaderLoad();
+            }
+            catch (Exception e)
+            {
+            }
+            try {
+                excutePurseLoad();
+            }
+            catch (Exception e)
+            {
+            }
+
 //            mLastCurrency = GlobalVar.mCurrency;
         } catch (Exception e) {
 
@@ -233,6 +257,35 @@ public class PurseDataLab {
 
 
     }
+    public void loadPurseData_DB_ver1() {
+        try {
+            openDatabase();
+            if(mPurseData==null)
+                mPurseData = new ArrayList<PurseData>();
+            else
+                mPurseData.clear();
+
+            try {
+                excutePurseHeaderLoad_ver1();
+            }
+            catch (Exception e)
+            {
+            }
+            try {
+                excutePurseLoad();
+            }
+            catch (Exception e)
+            {
+            }
+//            mLastCurrency = GlobalVar.mCurrency;
+        } catch (Exception e) {
+
+            Log.e(BasicInfo.TAG, "Error loading ExchangeData");
+        }
+
+
+    }
+
     public void savePurseData_DB()
     {
         excuteDataSave();
@@ -290,7 +343,7 @@ public class PurseDataLab {
             }
         c1.close();
     }
-    private void excutePurseHeaderLoad()
+    private void excutePurseHeaderLoad()throws Exception
     {
         if (mDbisOpened == false) {
             openDatabase();
@@ -308,7 +361,72 @@ public class PurseDataLab {
             Log.e("Excute Bank LoadDB : ", e.toString());
             return ;
         }
-        String sIndex,sStartDate,sEndDate,sBudget,sCurrency, sItem,sValue,sItemDate,sItemTime;
+        String sIndex,sStartDate,sEndDate,sBudget,sBudgetKRW,sCurrency;
+        DateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat fmNew = new SimpleDateFormat("yyyyMMdd");
+        Date date;
+        c1.moveToNext();
+        sStartDate = c1.getString(0);
+        int nComp = sStartDate.compareTo("null");
+        if (nComp < 0) {
+            int nColumeCount = c1.getColumnCount();
+
+            try {
+                date = fm.parse(sStartDate);
+                sStartDate = fmNew.format(date);
+            } catch (Exception e) {
+                Log.e("Excute InitDB : ", e.toString());
+            }
+            sEndDate = c1.getString(1);
+            try {
+                date = fm.parse(sEndDate);
+                sEndDate = fmNew.format(date);
+            } catch (Exception e) {
+                Log.e("Excute InitDB : ", e.toString());
+            }
+
+            mBeginDate = sStartDate;
+            mEndDate = sEndDate;
+
+            sBudget = c1.getString(2);
+
+            if(nColumeCount > 4 ) {
+                mBudget = Double.valueOf(sBudget);
+                sBudgetKRW = c1.getString(3);
+                mBudgetKRW = Double.valueOf(sBudgetKRW);
+                sCurrency = c1.getString(4);
+                mBudgetCurrency = sCurrency;
+            }
+            else
+            {
+                mBudgetKRW = Double.valueOf(sBudget);
+                mBudget = 0;
+                sCurrency = c1.getString(3);
+                mBudgetCurrency = sCurrency;
+            }
+            //mBudgetKRW = Double.valueOf(sBudgetKRW);
+
+        }
+    }
+    private void excutePurseHeaderLoad_ver1()throws Exception
+    {
+        if (mDbisOpened == false) {
+            openDatabase();
+        }
+        String SQL = "select * "
+                + "from " + "purse_table_header";
+        Cursor c1;
+        try {
+            c1 = mPurseDB.rawQuery(SQL);
+            if(c1==null)
+                return ;
+        }
+        catch(Exception e)
+        {
+            Log.e("Excute Bank LoadDB : ", e.toString());
+            return ;
+        }
+        String sIndex,sStartDate,sEndDate,sBudget,sBudgetKRW,sCurrency;
         DateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat fmNew = new SimpleDateFormat("yyyyMMdd");
         Date date;
@@ -332,12 +450,14 @@ public class PurseDataLab {
             }
 
             sBudget = c1.getString(2);
-            sCurrency = c1.getString(3);
+            sBudgetKRW = c1.getString(3);
+            sCurrency = c1.getString(4);
 
             mBeginDate = sStartDate;
             mEndDate = sEndDate;
             mBudget = Double.valueOf(sBudget);
-            mCurrencyChar = sCurrency;
+            mBudgetKRW = Double.valueOf(sBudgetKRW);
+            mBudgetCurrency = sCurrency;
         }
     }
     private void excuteDataSave()
@@ -354,7 +474,8 @@ public class PurseDataLab {
                     "\"" + mBeginDate + "\"," +
                     "\"" + mEndDate + "\"," +
                     Double.toString(mBudget) + "," +
-                    "\"" + mNationLab.getCurrencyCodeInEng()+ "\"" +//mCurrencyChar + "\"" +
+                    Double.toString(mBudgetKRW) + "," +
+                    "\"" + mBudgetCurrency+ "\"" +//mCurrencyChar + "\"" +
                     ")";
             mPurseDB.execSQL(SQL);
 
@@ -383,6 +504,13 @@ public class PurseDataLab {
         int nIndex = mPurseData.size();
         PurseData item = new PurseData(nIndex,sTitle,sDate,sTime,dValue,sCurrencycode);
         mPurseData.add(item);
+    }
+    public void editItem(int nIndex,  String sTitle,  String sDate, String sTime, double dValue,String sCurrencycode)
+    {
+        PurseData item = new PurseData(nIndex,sTitle,sDate,sTime,dValue,sCurrencycode);
+        mPurseData.set(nIndex, item);
+
+        //mPurseData.add(item);
     }
     public void delItem(PurseData item)
     {

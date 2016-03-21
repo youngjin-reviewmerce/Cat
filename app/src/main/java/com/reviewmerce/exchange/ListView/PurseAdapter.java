@@ -18,6 +18,7 @@ import com.reviewmerce.exchange.R;
 import com.reviewmerce.exchange.commonData.BankData;
 import com.reviewmerce.exchange.commonData.BankItem;
 import com.reviewmerce.exchange.commonData.PurseData;
+import com.reviewmerce.exchange.publicClass.NationDataLab;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,11 +31,12 @@ public class PurseAdapter extends BaseAdapter {
 
 
     private Context mContext;
-
+    NationDataLab mNationLab = null;
     private List<PurseData> mItems = new ArrayList<PurseData>();
     private String mCurrency="";
     public PurseAdapter(Context context) {
         mContext = context;
+        mNationLab = NationDataLab.get(null);
     }
 
     public void addItem(PurseData it) {
@@ -83,7 +85,7 @@ public class PurseAdapter extends BaseAdapter {
             itemView.setText(0, mItems.get(position).getTitle());
             itemView.setText(1, mItems.get(position).getDate());
             String sTemp=String.format("%.2f",mItems.get(position).getValue());
-            String sCurrencycode = gv.getCurrencyChar(mItems.get(position).getCurrencyCode());
+            String sCurrencycode = mNationLab.getCurrencyChar(mItems.get(position).getCurrencyCode());
             itemView.setText(2,  sCurrencycode + " " + sTemp);
 //            itemView.setBackgroundResource(R.color.item_color_0);
         } else {
@@ -92,7 +94,7 @@ public class PurseAdapter extends BaseAdapter {
             itemView.setText(0, mItems.get(position).getTitle());
             itemView.setText(1, mItems.get(position).getDate());
             String sTemp=String.format("%.2f",mItems.get(position).getValue());
-            String sCurrencycode = gv.getCurrencyChar(mItems.get(position).getCurrencyCode());
+            String sCurrencycode = mNationLab.getCurrencyChar(mItems.get(position).getCurrencyCode());
             itemView.setText(2,  sCurrencycode + " " + sTemp);
         }
         return itemView;

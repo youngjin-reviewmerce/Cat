@@ -13,13 +13,7 @@ import com.reviewmerce.exchange.publicClass.ExchangeDataLab;
 import com.reviewmerce.exchange.publicClass.LiveDataLab;
 import com.reviewmerce.exchange.publicClass.NationDataLab;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -127,27 +121,27 @@ public class ConnectMonitorThread_v2 extends Thread {
     private void getLiveProc()
     {
         try {
-            String sRequest ="https://ksmh2ahrej.execute-api.ap-northeast-1.amazonaws.com" + "/" +mMilestone+ "/currency";
-            String sResponse = "";
-            JSONObject json = new JSONObject();
-            json.put("operation", "get_live_currency");
-            json.put("currency", "ALL");
-            json.put("bank", "KEB");
-            sResponse = request_post_get_response(sRequest, json);
-            if(sResponse.length()>0)
-            {
-                sResponse = sResponse.replaceAll("\\\\", "");
-                sResponse =  sResponse.substring(1,sResponse.length()-1);
-                LiveDataLab liveLab = LiveDataLab.get(null);
-                liveLab.net_procPursetoDatalab(sResponse);
-            }
-            mParentHandler.sendMessage(Message.obtain(mParentHandler, BasicInfo.TYPE_MONITOR_LIVE, "refresh"));
+        String sRequest ="https://ksmh2ahrej.execute-api.ap-northeast-1.amazonaws.com" + "/" +mMilestone+ "/currency";
+        String sResponse = "";
+        JSONObject json = new JSONObject();
+        json.put("operation", "get_live_currency");
+        json.put("currency", "ALL");
+        json.put("bank", "KEB");
+        sResponse = request_post_get_response(sRequest, json);
+        if(sResponse.length()>0)
+        {
+            sResponse = sResponse.replaceAll("\\\\", "");
+            sResponse =  sResponse.substring(1,sResponse.length()-1);
+            LiveDataLab liveLab = LiveDataLab.get(null);
+            liveLab.net_procPursetoDatalab(sResponse);
         }
-        catch (Exception ex) {
-            mParentHandler.sendMessage(Message.obtain(mParentHandler, BasicInfo.TYPE_MONITOR_LIVE, "refresh"));
-            ex.printStackTrace();
-        }
+        mParentHandler.sendMessage(Message.obtain(mParentHandler, BasicInfo.TYPE_MONITOR_LIVE, "refresh"));
     }
+    catch (Exception ex) {
+        mParentHandler.sendMessage(Message.obtain(mParentHandler, BasicInfo.TYPE_MONITOR_LIVE, "refresh"));
+        ex.printStackTrace();
+    }
+}
     private void getBankProc()
     {
         BankDataLab DataLab = BankDataLab.get(null);
@@ -156,7 +150,7 @@ public class ConnectMonitorThread_v2 extends Thread {
             String sOperator = "get_live_currency";
             String sCurrency = mCurrency;
             String sBank = mBank;
-            HttpPost post = null;
+//            HttpPost post = null;
 
             JSONObject json = new JSONObject();
             json.put("operation", "get_live_currency");
@@ -351,11 +345,8 @@ public class ConnectMonitorThread_v2 extends Thread {
         }
 
         if (AddExchangeDataArray.size() > 0) {
-
             ExchangeLab.excuteSQL_addData_Currency(AddExchangeDataArray, szCurrency);
         }
-
-
     }
 
 }

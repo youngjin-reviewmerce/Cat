@@ -1,0 +1,80 @@
+<TableLayout
+    android:id="@+id/layoutPurseRow"
+    android:stretchColumns="0,1,2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffffff"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TableRow>
+
+    <TextView
+        android:id="@+id/tvPurseRow1"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:maxLength="15"
+        android:gravity="center|center_vertical"
+        android:textSize="14dp"
+        android:singleLine="true"
+        android:background="#ffffff"
+        />
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:text="@string/purse_topheader"
+        android:id="@+id/tvPurseRow2"
+        android:gravity="center|center_vertical"
+
+        android:textSize="14dp"
+        android:maxLength="15"
+        android:singleLine="true"
+        android:background="#ffffff"/>
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:id="@+id/tvPurseRow3"
+        android:gravity="center|center_vertical"
+        android:textSize="14dp"
+        android:maxLength="15"
+        android:singleLine="true"
+        android:background="#ffffff"/>
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            />
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:text="X"
+            android:src="@drawable/icon_nationselect"
+            android:background="#ffffffff"
+            android:textColor="@color/shippingMainTheme"
+            android:id="@+id/btnPurseRowEdit"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            />
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            />
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="30dp"
+            android:text="X"
+
+            android:textColor="@color/red"
+            android:id="@+id/btnPurseRowDelete"
+            android:background="#ffffffff"
+            android:gravity="center_vertical"
+            android:textStyle="bold" />
+    </TableRow>
+</TableLayout>
+
+

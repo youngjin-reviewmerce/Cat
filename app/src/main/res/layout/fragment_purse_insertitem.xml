@@ -15,7 +15,7 @@
             android:id="@+id/ivHeader"
             android:layout_height="30dp"
             android:layout_width="fill_parent"
-            android:src="@drawable/header_one"
+            android:background="@color/shippingMainTheme"
             android:scaleType="fitXY"/>
         <TextView
             android:layout_width="wrap_content"
@@ -27,6 +27,7 @@
             android:gravity="center|center_vertical"
             android:layout_marginLeft="40dp"
             android:textColor="#ffffff"
+
             android:textStyle="bold"/>
         <TextView
             android:layout_width="60dp"
@@ -44,62 +45,143 @@
 
     <TableLayout
         android:id="@+id/Layout_1_1"
-        android:stretchColumns="1"
+        android:stretchColumns="2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffeeeeee"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
+
         >
         <TableRow>
-            <TextView
-                android:id="@+id/tv_purse_item_title"
+            <ImageView
+                android:layout_marginLeft="10dp"
                 android:layout_height="30dp"
-                android:layout_width="100dp"
-                android:text="항 목"
-                android:textSize="16dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:background="#ffffffff"
-                android:singleLine="true"
-                android:gravity="center_horizontal|center_vertical"
-                android:textColor="#ffffff"
+                android:layout_width="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_purse_item"
+                android:background="@color/shippingMainTheme"
+                android:id="@+id/iv_purse_item_icon"
+                android:layout_gravity="center_vertical"
+
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
                 />
-            <EditText
+
+                <TextView
+                    android:id="@+id/tv_purse_item_title"
+                    android:layout_height="30dp"
+                    android:layout_width="40dp"
+                    android:text="항 목"
+                    android:textSize="16dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:background="@color/shippingMainTheme"
+                    android:singleLine="true"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:textColor="#ffffff"
+                    android:layout_gravity="center_vertical"
+                    />
+
+
+            <com.reviewmerce.exchange.custom.WrapperEditText
                 android:id="@+id/tv_purse_item_input"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
-                android:text="10/10"
+                android:text="항목"
                 android:textSize="16dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:background="#ffffffff"
                 android:singleLine="true"
                 android:maxLength="30"
-                android:gravity="center_horizontal|center_vertical"/>
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:layout_marginRight="10dp"
+                />
 
         </TableRow>
         <TableRow>
-
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_height="30dp"
+                android:layout_width="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_purse_date"
+                android:background="@color/shippingMainTheme"
+                android:id="@+id/iv_purse_date_icon"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                />
             <TextView
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="4dp"
                 android:id="@+id/tv_purse_date_title"
                 android:layout_height="30dp"
                 android:layout_width="100dp"
                 android:text="날 짜"
                 android:textSize="16dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:background="#ffffffff"
+                android:background="@color/shippingMainTheme"
                 android:singleLine="true"
                 android:gravity="center_horizontal|center_vertical"
                 android:textColor="#ffffff"
                 />
             <TextView
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="10dp"
                 android:id="@+id/tv_purse_date_input"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
-                android:text="2015/10/10"
+                android:text="1900/01/01"
+                android:textSize="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:background="#ffffffff"
+                android:singleLine="true"
+                android:maxLength="30"
+                android:gravity="center_horizontal|center_vertical"
+                />
+        </TableRow>
+        <TableRow>
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_height="30dp"
+                android:layout_width="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_purse_value"
+                android:background="@color/shippingMainTheme"
+                android:id="@+id/iv_purse_value_icon"
+                android:layout_gravity="center_vertical"
+
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                />
+            <TextView
+                android:layout_marginTop="4dp"
+                android:id="@+id/tv_purse_value_title"
+                android:layout_height="30dp"
+                android:layout_width="100dp"
+                android:text="금 액"
+                android:textSize="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:background="@color/shippingMainTheme"
+                android:singleLine="true"
+                android:gravity="center_horizontal|center_vertical"
+                android:textColor="#ffffff"
+
+                />
+            <com.reviewmerce.exchange.custom.WrapperEditText
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/tv_purse_value_input"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:text="금액"
                 android:textSize="16dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:background="#ffffffff"
@@ -108,22 +190,40 @@
                 android:gravity="center_horizontal|center_vertical"/>
         </TableRow>
         <TableRow>
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_height="30dp"
+                android:layout_width="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_purse_nation"
+                android:background="@color/shippingMainTheme"
+                android:id="@+id/iv_purse_icon_nation"
+                android:layout_gravity="center_vertical"
+
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                />
             <TextView
-                android:layout_marginTop="16dp"
-                android:id="@+id/tv_purse_value_title"
+                android:layout_marginTop="4dp"
+                android:id="@+id/tv_purse_title_nation"
                 android:layout_height="30dp"
                 android:layout_width="100dp"
-                android:text="금 액"
+                android:text="국가"
                 android:textSize="16dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:background="#ffffffff"
+                android:background="@color/shippingMainTheme"
                 android:singleLine="true"
                 android:gravity="center_horizontal|center_vertical"
                 android:textColor="#ffffff"
+
                 />
-            <EditText
-                android:layout_marginTop="16dp"
-                android:id="@+id/tv_purse_value_input"
+            <TextView
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/tv_purse_value_nation"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
                 android:text="10/10"

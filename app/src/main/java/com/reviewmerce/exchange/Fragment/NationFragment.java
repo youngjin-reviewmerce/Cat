@@ -74,7 +74,34 @@ public class NationFragment extends DialogFragment {
                     + " must implement OnHeadlineSelectedListener");
         }
     }
+    @Override
+    public void onStart() {
+        super.onStart();
 
+        // safety check
+        if (getDialog() == null)
+            return;
+
+        int height = getActivity().getWindowManager().getDefaultDisplay().getHeight();
+        int width = getActivity().getWindowManager().getDefaultDisplay().getWidth();
+
+        int dialogWidth = (int)(width*0.8); // specify a value here
+        int dialogHeight = (int)(height*0.8); // specify a value here
+
+        if(dialogHeight<1000)
+            dialogHeight=1000;
+        getDialog().getWindow().setLayout(dialogWidth, dialogHeight);
+
+
+        //  setButton();
+        // ... other stuff you want to do in your onStart() method
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Refresh the state of the +1 button each time the activity receives focus.
+    }
     @Override
     public void onStop() {
         m_bRunning = false;

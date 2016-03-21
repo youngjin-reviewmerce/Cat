@@ -7,7 +7,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.reviewmerce.exchange.R;
-import com.reviewmerce.exchange.commonData.BankItem;
 import com.reviewmerce.exchange.commonData.PurseData;
 
 /**
@@ -41,7 +40,7 @@ public class PurseView extends LinearLayout {
 
         // Layout Inflation
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.purse_listrow, this, true);
+        inflater.inflate(R.layout.list_purse, this, true);
 
         // Set Icon
 //        mIcon = (ImageView) findViewById(R.id.imgContury);

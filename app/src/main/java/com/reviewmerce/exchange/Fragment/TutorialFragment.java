@@ -77,8 +77,7 @@ public class TutorialFragment extends baseOnebuyFragment implements AdapterView.
         if(mTutorialIndex < 0 )
             mTutorialIndex = 0;
         if(mTutorialIndex >= BasicInfo.g_nTutorialCount)
-            mCallback.chgFragment(6, 1);
-
+            mCallback.chgFragment(BasicInfo.FRAGMENT_TUTORIAL, 1);
         String sFilename = String.format("%stutorial_%02d.jpg",sFoldername, mTutorialIndex+1);
         try {
             if (mBackgroundBitmap != null)

@@ -1,5 +1,6 @@
 package com.reviewmerce.exchange.commonData;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
 /**
@@ -9,7 +10,7 @@ public class CurrencyItem {
     /**
      * Icon
      */
-    private Drawable mIcon;
+    private Bitmap mIcon;
 
     /**
      * Data array
@@ -27,7 +28,7 @@ public class CurrencyItem {
      * @param icon
      * @param obj
      */
-    public CurrencyItem(Drawable icon, String[] obj) {
+    public CurrencyItem(Bitmap icon, String[] obj) {
         mIcon = icon;
         mData = obj;
     }
@@ -40,7 +41,7 @@ public class CurrencyItem {
      * @param obj02
      * @param obj03
      */
-    public CurrencyItem(Drawable icon, String obj01,String obj02) {
+    public CurrencyItem(Bitmap icon, String obj01,String obj02) {
         mIcon = icon;
 
         mData = new String[3];
@@ -96,7 +97,7 @@ public class CurrencyItem {
      *
      * @param icon
      */
-    public void setIcon(Drawable icon) {
+    public void setIcon(Bitmap icon) {
         mIcon = icon;
     }
 
@@ -105,7 +106,7 @@ public class CurrencyItem {
      *
      * @return
      */
-    public Drawable getIcon() {
+    public Bitmap getIcon() {
         return mIcon;
     }
 

@@ -102,6 +102,7 @@ public class NationDataLab {
     protected List<String> mUseNationData;
     private NationData mSelectCurrency=null;
     protected HashMap<String, String> mAnotherNationData;
+    private NationData mCatNationData=null;
 
     public static NationDataLab get(Context c) {
         if (mNationDataLab == null) {
@@ -123,8 +124,24 @@ public class NationDataLab {
         mSelectCurrency = new NationData();
         initNationData();
         initNationAdapter();
+
      //   loadData_DB();
     }
+    public void changeCatData(NationData nd)
+    {
+        if(nd!=null) {
+            nd.setGraphTextColor(Color.parseColor("#ff3e3a39"));
+            nd.setGraphColor(Color.parseColor("#ff0092ff"));
+            nd.setGraphFillColor(Color.parseColor("#800092ff"));
+            nd.setPurseTextColor(Color.parseColor("#ff3fa9f5"));
+            nd.setPurseTextColor2(Color.parseColor("#ff7ac6f4"));
+            nd.setGraphBubbleFile("image/bubble/cat_bubble.png");
+            nd.setPurseBarFile1("aud_bar.png");
+            nd.setPurseBarFile2("aud_bar2.png");
+            nd.setHalfBarFile("usd_barhalf.png");
+        }
+    }
+
     public void initNationAdapter()
     {
         mNationAdapter = initNationAdapter(mAppContext);
@@ -1797,12 +1814,17 @@ public class NationDataLab {
         {
             if(mSelectCurrency == null)
                 mSelectCurrency = new NationData();
+            changeCatData(nd);
             mSelectCurrency.setData(nd); // 복사
             globalVar.setSelectCurrency(nd);
         }
         else
         {
-            nd = mAllNationData.get("USD");
+            nd =new NationData("USD");
+                    //mAllNationData.get("USD");
+            changeCatData(nd);
+            if(mSelectCurrency == null)
+                mSelectCurrency = new NationData();
             mSelectCurrency.setData(nd);
         }
     }
@@ -1814,6 +1836,12 @@ public class NationDataLab {
     }
     public String getCountryNameInKorean() {
         String sRtn = mSelectCurrency.getCountryNameInKorean();
+        return sRtn;
+    }
+    public String getCountryNameInKorean(String sCurrency)
+    {
+        String sRtn="";
+        sRtn = mAllNationData.get(sCurrency).getCountryNameInKorean();
         return sRtn;
     }
     public Bitmap getPurseBar1Bitmap()

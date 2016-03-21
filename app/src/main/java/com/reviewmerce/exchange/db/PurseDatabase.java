@@ -105,7 +105,7 @@ public class PurseDatabase {
         Cursor c1 = null;
         try {
             c1 = db.rawQuery(SQL, null);
-            println("cursor count : " + c1.getCount());
+            String sVal = "cursor count : " + c1.getCount();
         } catch (Exception ex) {
             Log.e(TAG, "Exception in executeQuery", ex);
         }
@@ -141,6 +141,7 @@ public class PurseDatabase {
                 + BasicInfo.TABLE_PURSE_STARTDATE + " STRING, "
                 + BasicInfo.TABLE_PURSE_ENDDATE + " STRING, "
                 + BasicInfo.TABLE_PURSE_BUDGET  + " REAL, "
+                + BasicInfo.TABLE_PURSE_BUDGETKRW  + " REAL, "
                 + BasicInfo.TABLE_PURSE_CURRENCY + " STRING"
                 + " );";
         // create table
@@ -184,6 +185,7 @@ public class PurseDatabase {
                 + BasicInfo.TABLE_PURSE_STARTDATE + " STRING, "
                 + BasicInfo.TABLE_PURSE_ENDDATE + " STRING, "
                 + BasicInfo.TABLE_PURSE_BUDGET  + " REAL, "
+                + BasicInfo.TABLE_PURSE_BUDGETKRW  + " REAL, "
                 + BasicInfo.TABLE_PURSE_CURRENCY + " STRING"
                 + " );";
         // create table

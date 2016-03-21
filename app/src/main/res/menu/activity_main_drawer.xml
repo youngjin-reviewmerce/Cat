@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:title="">
+            <menu>
+                <item
+                    android:id="@+id/nav_mobile"
+                    android:icon="@drawable/icon_menu_mobile"
+                    android:title="모바일데이터" />
+                <item
+                    android:id="@+id/nav_tutorial"
+                    android:icon="@drawable/icon_menu_tutorial"
+                    android:title="튜토리얼" />
+                <item
+                    android:id="@+id/nav_license"
+                    android:icon="@drawable/icon_menu_license"
+                    android:title="라이센스 정보"
+                    />
+                <item
+                    android:id="@+id/nav_calc"
+                    android:icon="@drawable/icon_menu_calc"
+                    android:title="계산기"
+                    />
+                <item
+                    android:id="@+id/nav_shipping"
+                    android:icon="@drawable/icon_menu_shipping"
+                    android:title="SHIPPING"
+                    />
+                <item
+                    android:id="@+id/nav_version"
+                    android:title="버전확인"
+                    />
+            </menu>
+        </item>
+    </group>
+
+
+</menu>

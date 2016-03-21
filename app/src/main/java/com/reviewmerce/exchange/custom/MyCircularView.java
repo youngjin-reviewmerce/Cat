@@ -22,6 +22,7 @@ import com.reviewmerce.exchange.GlobalVar;
 import com.reviewmerce.exchange.R;
 import com.reviewmerce.exchange.commonData.ExchangeData;
 import com.reviewmerce.exchange.publicClass.ExchangeDataLab;
+import com.reviewmerce.exchange.publicClass.NationDataLab;
 
 import java.util.ArrayList;
 
@@ -31,19 +32,23 @@ import java.util.ArrayList;
  * @author Philipp Jahoda
  */
 public class MyCircularView extends View {
-    GlobalVar gv = GlobalVar.get();
+    Context appContext=null;
+    GlobalVar gv;
     private Paint mPaintCircle = null;
 
     private int diameter = 80;
 
     private int nMaxProgress=4;
     private int nSelectProgress=nMaxProgress-1;
-
+    NationDataLab mNationLab =null;
     public MyCircularView(Context ct) {
         super(ct);
+        appContext = ct;
+        gv = GlobalVar.get();
     }
     public MyCircularView (Context context, AttributeSet attrs) {
         super(context, attrs);
+        mNationLab = NationDataLab.get(null);
     }
     Paint mPaint;
     @Override
@@ -52,7 +57,7 @@ public class MyCircularView extends View {
         drawThum(canvas);
     }
     private void drawThum(Canvas canvas) {
-        GlobalVar gv = GlobalVar.get();
+
         int nWidth = this.getWidth();
         int nHeight = this.getHeight() ;
         int drawX = 0;
@@ -83,12 +88,12 @@ public class MyCircularView extends View {
         mPaintCircle.setAntiAlias(true);
 
 
-        mPaintCircle.setColor(gv.getGraphColor());
+        mPaintCircle.setColor(mNationLab.getGraphColor());
 
         canvas.drawCircle(drawX, drawY, arcRadius, mPaintCircle);
 
         int colorCalc = Color.parseColor("#00ffffff");
-        int color = gv.getGraphColor();
+        int color = mNationLab.getGraphColor();
         color = color & colorCalc;
         colorCalc = Color.parseColor("#30000000");
         color = color | colorCalc;
@@ -97,7 +102,7 @@ public class MyCircularView extends View {
         Paint pnt = new Paint();
         pnt.setStyle(Style.STROKE);
         pnt.setStrokeWidth(3);
-        pnt.setColor(gv.getGraphColor());
+        pnt.setColor(mNationLab.getGraphColor());
         pnt.setAntiAlias(true);
         arcRadius = (diameter - 15) / 2;
         canvas.drawCircle(drawX, drawY, arcRadius, mPaintCircle);
@@ -115,7 +120,6 @@ public class MyCircularView extends View {
     }
     private void drawText()
     {
-        GlobalVar gv = GlobalVar.get();
         int nWidth = this.getWidth();
         int nHeight = this.getHeight() / 2;
         int drawX = 0;

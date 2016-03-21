@@ -2,19 +2,19 @@ package com.reviewmerce.exchange.Fragment;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,13 +24,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -40,18 +37,15 @@ import com.reviewmerce.exchange.AnalyticsApplication;
 import com.reviewmerce.exchange.BasicInfo;
 import com.reviewmerce.exchange.ConnectMonitorThread_v2;
 import com.reviewmerce.exchange.GlobalVar;
-import com.reviewmerce.exchange.ListView.CurrencyAdapter;
-import com.reviewmerce.exchange.ListView.PurseAdapter;
-import com.reviewmerce.exchange.MainActivity;
+import com.reviewmerce.exchange.Activity.MainActivity;
+import com.reviewmerce.exchange.ListView.PurseAdapter_2;
 import com.reviewmerce.exchange.R;
-import com.reviewmerce.exchange.commonData.CurrencyItem;
 import com.reviewmerce.exchange.commonData.PurseData;
 import com.reviewmerce.exchange.custom.MyMenuBtn;
 import com.reviewmerce.exchange.publicClass.LiveDataLab;
 import com.reviewmerce.exchange.publicClass.NationDataLab;
 import com.reviewmerce.exchange.publicClass.NetworkInfo;
 import com.reviewmerce.exchange.publicClass.PurseDataLab;
-import com.reviewmerce.exchange.publicClass.SwipeDetector;
 
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -66,10 +60,9 @@ import java.util.GregorianCalendar;
  * Activities that contain this fragment must implement the
  * {@link PurseFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link PurseFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PurseFragment extends baseOnebuyFragment {
+public class PurseFragment extends baseOnebuyFragment implements baseOnebuyFragment.PurseInterface{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -82,64 +75,39 @@ public class PurseFragment extends baseOnebuyFragment {
     NationDataLab mNationLab = null;
     Handler mHandlerHttp;
     private boolean m_bConnectThreadRunning = false;
-    TextView mtvCurrency, mtvConvertedValue, mtvDate, tvSeperator;
-    Rect mNationSelectRect;
-    private Button mBtnNationSelect;
+   // TextView mtvCurrency, mtvConvertedValue, mtvDate;//, tvSeperator;
+    PurseBudgetDialogFragment mDialogPurseBudget=null;
+    PurseInputDialogFragment mDialogPurseInput=null;
+//    Rect mNationSelectRect;
+//    private Button mBtnNationSelect;
     private ImageView mBackgroundView;
     private int mStatusView;
     private Bitmap mBackgroundBitmap=null;
     private Bitmap mBar1Bitmap = null;
     private Bitmap mBar2Bitmap = null;
     private boolean bIsKeyboard = false;
-    /////////////////////////////////////////////////////////////////////////////
+ //   private FrameLayout mTopLayout;
+   // /////////////////////////////////////////////////////////////////////////////
     FrameLayout mFrameLayout;
     LinearLayout mParentLinearLayout;
-    LinearLayout mBudgetLayout, mMainLayout,mInsertLayout;
-    private ImageView mButtonRefresh;
-    MyMenuBtn mButtonMenu;
+    LinearLayout mMainLayout;
+
+ //   MyMenuBtn mButtonMenu;
     ArrayList<PurseData> listPurseData;
     PurseData delPurseData;
+    double mResultValKRW = .0f;
     double mResultVal = .0f;
-
-    ListView mMain_lvBody;
-    PurseAdapter mMainlistAdapter;
+    RecyclerView mMain_lvBody;
+    private PurseAdapter_2 mMainlistAdapter;
     ImageView mMain_ivHeader1,mMain_ivHeader2;
     TextView mMain_tvBudgetDate, mMain_tvBudgetValue, mMain_tvResultTitle,mMain_tvResultKRWValue, mMain_tvResuleValueKRWMark, mMain_tvResultValue, mMain_tvResuleValueMark;
-
-
-    ImageView mBudget_ivHeader;
-    TextView mBudget_tvDate1, mBudget_tvDate2, mBudget_etValue, mBudget_etValue_kor;
-
-
-    ImageView mInsert_ivHeader;
-    TextView  mInsert_tvItemValue,mInsert_tvDateValue,mInsert_tvInputValue;
-    TextView  mInsert_tvItemTitle,mInsert_tvDateTitle,mInsert_tvInputTitle;
-    /////////////////////////////////////////////////////////////////////////////
+    ImageView mMain_ivCat;
+/////////////////////////////////////////////////////////////////////////////
     private boolean bAnimationRunning;
     private Tracker mTracker;
     private OnFragmentInteractionListener mListener;
+    private MediaPlayer mediaPlayer;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PurseFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PurseFragment newInstance(String param1, String param2) {
-        PurseFragment fragment = new PurseFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public PurseFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -157,60 +125,17 @@ public class PurseFragment extends baseOnebuyFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_purse, container, false);
-        mNationSelectRect = new Rect();
+//        mNationSelectRect = new Rect();
         mStatusView = 0;
         mGlobalVar = GlobalVar.get();
         mNationLab = NationDataLab.get(null);
         prepareListData();
         initLinearView(v);
         initFragmentView(v);
-        setMenuButton(v);
-        LinearLayout linearLayout = (LinearLayout)v.findViewById(R.id.purseMainLinear);
-        linearLayout.setOnTouchListener(touchMainListener);
-/*
-        new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
+//        setMenuButton(v);
 
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    m_nPreTouchPosX = (int) event.getX();
-                }
 
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    int nTouchPosX = (int) event.getX();
 
-                    if (nTouchPosX < m_nPreTouchPosX - BasicInfo.g_nMovePos)   // 오른쪽
-                    {
-                        //                     recycleView(mLayout);
-                        mCallback.chgFragment(2, 1);
-                    } else if (nTouchPosX > m_nPreTouchPosX + BasicInfo.g_nMovePos) {
-                        //                       recycleView(mLayout);
-                        mCallback.chgFragment(2, -1);
-                    }
-                    else
-                    {
-
-                        mBtnNationSelect.getHitRect(mNationSelectRect);
-                        if((int)event.getY() <= mNationSelectRect.bottom )
-                        {
-                            mCallback.makeNationDialog(2);
-                        }
-                    }
-
-                    m_nPreTouchPosX = nTouchPosX;
-                    if ((mStatusView == 1) || (mStatusView == 2)) {
-                        if (bIsKeyboard == true) {
-                            closeKeyboard();
-                        }
-                        else {
-                            changeView(0);
-                        }
-                    }
-                }
-                return false;
-            }
-        });
-//*/
         mHandlerHttp = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -218,14 +143,13 @@ public class PurseFragment extends baseOnebuyFragment {
                     case BasicInfo.TYPE_MONITOR_LIVE:     // 메시지로 넘겨받은 파라미터, 이 값으로 어떤 처리를 할지 결정
                         m_bConnectThreadRunning = false;
                         mLiveDatalab.saveLiveData_DB();
-                        saveData();
+       //                 saveData();
                         dataToView();
                         stopAnimation();
                         break;
                     case BasicInfo.TYPE_ANIMATION_REFRESH:
                         int nDrawable = (int)msg.obj;
-                        mButtonRefresh.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                        mButtonRefresh.setImageResource(nDrawable);
+
                         break;
                 }
             }
@@ -234,6 +158,7 @@ public class PurseFragment extends baseOnebuyFragment {
         mPurseDatalab = PurseDataLab.get(null);
         mLiveDatalab = LiveDataLab.get(null);
 
+        calcBudgetOldVer();
         chgCurrency(mNationLab.getCurrencyCodeInEng());
         dataToView();
 
@@ -257,7 +182,6 @@ public class PurseFragment extends baseOnebuyFragment {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             // TODO Auto-generated method stub
-
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 m_nPreTouchPosX = (int) event.getX();
             }
@@ -268,85 +192,27 @@ public class PurseFragment extends baseOnebuyFragment {
                 if (nTouchPosX < m_nPreTouchPosX - BasicInfo.g_nMovePos)   // 오른쪽
                 {
                     //                     recycleView(mLayout);
-                    mCallback.chgFragment(2, 1);
+                    mCallback.chgFragment(BasicInfo.FRAGMENT_MOVE, 1);
                 } else if (nTouchPosX > m_nPreTouchPosX + BasicInfo.g_nMovePos) {
                     //                       recycleView(mLayout);
-                    mCallback.chgFragment(2, -1);
-                }
-                else
-                {
-
-                    mBtnNationSelect.getHitRect(mNationSelectRect);
-                    if((int)event.getY() <= mNationSelectRect.bottom )
-                    {
-                        mCallback.makeNationDialog(2);
-                    }
+                    mCallback.chgFragment(BasicInfo.FRAGMENT_MOVE, -1);
                 }
                 m_nPreTouchPosX = nTouchPosX;
-                if ((mStatusView == 1) || (mStatusView == 2)) {
-                    if (bIsKeyboard == true) {
-                        closeKeyboard();
-                    }
-                    else {
-                        changeView(0);
-                    }
-                }
             }
             return false;
         }
 
     };
+
+
+    @Override
+    public void onResume() {
+        mCallback.chgBottombar(BasicInfo.FRAGMENT_EXCHANGE_PURSE,"Purse");
+        super.onResume();
+    }
     private void initFragmentView(View v)
     {
-        mBackgroundView = (ImageView)v.findViewById(R.id.ivScreen);
-        mButtonRefresh = (ImageView)v.findViewById(R.id.btnRefresh);
-        mButtonRefresh.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        mButtonRefresh.setImageResource(R.drawable.ic_refresh1);
-        mButtonRefresh.setOnClickListener(new View.OnClickListener() {
-                                              @Override
-                                              public void onClick(View v) {
-                                                  Boolean bWifi = NetworkInfo.IsWifiAvailable(getActivity());
-                                                  if ((mGlobalVar.getNetworkMode() == false) && (bWifi == false)) {
-
-                                                      AlertDialog.Builder alt_bld = new AlertDialog.Builder(getActivity());
-                                                      String sMsg = String.format("모바일 데이터를 사용하지 않도록 설정되어 있습니다. 그래도 모바일 데이터를 사용 하시겠습니까?");
-                                                      alt_bld.setMessage(sMsg).setCancelable(
-                                                              false).setPositiveButton("Yes",
-                                                              new DialogInterface.OnClickListener() {
-                                                                  public void onClick(DialogInterface dialog, int id) {
-                                                                      refresh();
-                                                                  }
-                                                              }).setNegativeButton("No",
-                                                              new DialogInterface.OnClickListener() {
-                                                                  public void onClick(DialogInterface dialog, int id) {
-                                                                      // Action for 'NO' Button
-                                                                      dialog.cancel();
-
-                                                                  }
-                                                              });
-                                                      alt_bld.show();
-                                                  } else
-                                                      refresh();
-
-                                              }
-                                          }
-        );
-        mtvCurrency = (TextView)v.findViewById(R.id.tvCurrency);
-
-        mtvCurrency.setOnClickListener(new View.OnClickListener() {
-                                           @Override
-                                           public void onClick(View v) {
-                                               mCallback.makeNationDialog(2);
-
-//*/
-                                           }
-                                       }
-        );
-        mtvConvertedValue = (TextView)v.findViewById(R.id.tvConverted_value);
-        mtvDate = (TextView)v.findViewById(R.id.tvDate);
-        tvSeperator = (TextView)v.findViewById(R.id.tvSeperator);
-        mBtnNationSelect = (Button)v.findViewById(R.id.btnNationSelect);
-        mBtnNationSelect.setOnTouchListener(touchMainListener);
+        mBackgroundView = (ImageView)v.findViewById(R.id.ivScreen_graph);
 
     }
     private void initLinearView(View v)
@@ -355,23 +221,13 @@ public class PurseFragment extends baseOnebuyFragment {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         mFrameLayout = new FrameLayout(getActivity());
-
         mParentLinearLayout = (LinearLayout)v.findViewById(R.id.purseMainLinear);
-        mBudgetLayout = (LinearLayout)infalInflater.inflate(R.layout.fragment_purse_budget, null);
-        mBudgetLayout.setVisibility(View.GONE);
-        mMainLayout = (LinearLayout)infalInflater.inflate(R.layout.fragment_purse_main, null);
-        mInsertLayout = (LinearLayout)infalInflater.inflate(R.layout.fragment_purse_insertitem, null);
-        mInsertLayout.setVisibility(View.GONE);
+        mMainLayout = (LinearLayout) infalInflater.inflate(R.layout.fragment_purse_main, null);
 
         mFrameLayout.addView(mMainLayout);
-        mFrameLayout.addView(mBudgetLayout);
-        mFrameLayout.addView(mInsertLayout);
         mParentLinearLayout.addView(mFrameLayout);
-
         initMainLayoutView(mMainLayout);
-        initBudgetLayoutView(mBudgetLayout);
-        initInsertLayoutView(mInsertLayout);
-    }
+            }
     private void initMainLayoutView(View v)
     {
         mMain_ivHeader1 = (ImageView)mMainLayout.findViewById(R.id.ivHeader1);
@@ -379,7 +235,7 @@ public class PurseFragment extends baseOnebuyFragment {
         mMain_ivHeader1.setOnClickListener(new View.OnClickListener() {
                                                @Override
                                                public void onClick(View v) {
-                                                   changeView(1);
+                                                   changeView(BasicInfo.FRAGMENT_EXCHANGE_PURSE_BUDGET);
                                                }
                                            }
         );
@@ -393,21 +249,10 @@ public class PurseFragment extends baseOnebuyFragment {
                                                    mBudgetLayout.setVisibility(View.GONE);
                                                    mInsertLayout.setVisibility(View.VISIBLE);
                                                    */
-                                                   changeView(2);
-                                                   GregorianCalendar today = new GregorianCalendar();
-                                                   int year = today.get(today.YEAR);
-                                                   int month = today.get(today.MONTH) + 1;
-                                                   int day = today.get(today.DAY_OF_MONTH);
-                                                   Date time = today.getTime();
-
-                                                   mInsert_tvInputValue.setText("");
-                                                   mInsert_tvDateValue.setText(String.format("%2d/%2d", month,day));
-                                                   mInsert_tvItemValue.setText("");
-                                                   mInsertLayout.setPadding(0, 60, 0, 0);
+                                                   changeView(BasicInfo.FRAGMENT_EXCHANGE_PURSE_INPUT);
                                                }
                                            }
         );
-     //   mMain_ivHeader3 = (ImageView)mMainLayout.findViewById(R.id.ivHeader3);
         mMain_tvBudgetDate = (TextView)v.findViewById(R.id.tv_purse_budget_date);
         mMain_tvResultTitle = (TextView)v.findViewById(R.id.tv_purse_result_title);
         mMain_tvBudgetValue = (TextView)v.findViewById(R.id.tv_purse_budget_value);
@@ -417,373 +262,30 @@ public class PurseFragment extends baseOnebuyFragment {
         mMain_tvResultValue = (TextView)v.findViewById(R.id.tv_purse_result_value);
         mMain_tvResuleValueMark  = (TextView)v.findViewById(R.id.tv_purse_result_value_mark);
 
+        mMain_ivCat = (ImageView)v.findViewById(R.id.ivCat);
+        mMain_ivCat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String sFile = BasicInfo.InternalPath + "/image/meow.mp3";
+                try {
+                    playAudio(sFile);
+                } catch (Exception e) {
+                }
+            }
+        });
         initMainListView(v);
+        LinearLayout layoutMain = (LinearLayout)mMainLayout.findViewById(R.id.purseLayout_main);
+        layoutMain.setOnTouchListener(touchMainListener);
     }
     public void initMainListView(View v)
     {
-        mMain_lvBody = (ListView) v.findViewById(R.id.tv_purse_listview);
+        mMain_lvBody = (RecyclerView) v.findViewById(R.id.tv_purse_listview);
 
-        mMainlistAdapter = new PurseAdapter(getActivity());
-        LinearLayout layout = (LinearLayout)v.findViewById(R.id.bankheaderLayout);
-        //   layout.setBackgroundColor();
-        mMain_lvBody.setAdapter(mMainlistAdapter);
-        final SwipeDetector swipeDetector = new SwipeDetector();
-        mMain_lvBody.setOnTouchListener(swipeDetector);
-        mMain_lvBody.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (swipeDetector.swipeDetected()) {
-
-                    PurseData pd = (PurseData) parent.getItemAtPosition(position);
-                    delPurseData = pd;
-                    deleteOk_dialog();
-                    //PurseData item = new PurseData(nIndex,sTitle,sDate,sTime,dValue);
-
-
-                } else {
-                    // do the onItemClick action
-                }
-            }
-        });
-        mMain_lvBody.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                if (swipeDetector.swipeDetected()) {
-                    PurseData pd = (PurseData) parent.getItemAtPosition(position);
-                    delPurseData = pd;
-
-
-                    return true;
-                } else {
-                    // do the onItemLongClick action
-                    return true;
-                }
-            }
-        });
-    }
-    private void initBudgetLayoutView(View v)
-    {
-        mBudget_ivHeader = (ImageView)v.findViewById(R.id.ivHeader);
-
-        mBudget_ivHeader.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    changeView(0);
-                                                    saveData();
-                                                    dataToView();
-                                                }
-                                            }
-        );
-        mBudget_ivHeader.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    changeView(0);
-
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });
-        mBudget_tvDate1 = (TextView)v.findViewById(R.id.tv_purse_budget_date1);
-        mBudget_tvDate2 = (TextView)v.findViewById(R.id.tv_purse_budget_date2);
-        mBudget_etValue = (TextView)v.findViewById(R.id.et_purse_budget_value);
-        mBudget_etValue_kor = (TextView)v.findViewById(R.id.et_purse_budget_value_kor);
-
-        GregorianCalendar today = new GregorianCalendar();
-        final int todayYear = today.get(today.YEAR);
-        final int todayMonth = today.get(today.MONTH) + 1;
-        final int todayDay = today.get(today.DAY_OF_MONTH);
-
-        mBudget_tvDate1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                int nYear = mPurseDatalab.getBeginDate_year();
-
-                int nMonth = mPurseDatalab.getBeginDate_month();
-                int nDay = mPurseDatalab.getBeginDate_day();
-                if ((nYear == 0) || (nMonth == 0) || (nDay == 0)) {
-                    nYear = todayYear;
-                    nMonth = todayMonth;
-                    nDay = todayDay;
-                }
-                DatePickerDialog.OnDateSetListener mDateSetListener =
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                mPurseDatalab.setBeginDate(year, monthOfYear + 1, dayOfMonth);
-                                dataToView();
-                            }
-                        };
-                DatePickerDialog alert = new DatePickerDialog(getActivity(), mDateSetListener, nYear, nMonth - 1, nDay);
-                alert.show();
-            }
-        });
-        mBudget_tvDate2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int nYear = mPurseDatalab.getEndDate_year();
-                int nMonth = mPurseDatalab.getEndDate_month();
-                int nDay = mPurseDatalab.getEndDate_day();
-                if ((nYear == 0) || (nMonth == 0) || (nDay == 0)) {
-                    nYear = todayYear;
-                    nMonth = todayMonth;
-                    nDay = todayDay;
-                }
-                DatePickerDialog.OnDateSetListener mDateSetListener =
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                mPurseDatalab.setEndDate(year, monthOfYear + 1, dayOfMonth);
-                                dataToView();
-                            }
-                        };
-                DatePickerDialog alert = new DatePickerDialog(getActivity(), mDateSetListener, nYear, nMonth - 1, nDay);
-                alert.show();
-            }
-        });
-        mBudget_etValue.setText("");
-        mBudget_etValue.setInputType(0);
-        mBudget_etValue.requestFocus();
-        mBudget_etValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mBudget_etValue.setText("");
-                mBudget_etValue.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-
-
-                //       mBudget_etValue.setInputType(InputType.TYPE_CLASS_NUMBER);
-                mBudget_etValue.setImeOptions(EditorInfo.IME_ACTION_DONE);
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-                bIsKeyboard = true;
-            }
-        });
-        mBudget_etValue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-                switch (actionId) {
-                    case EditorInfo.IME_ACTION_DONE:        // 완료
-                    case EditorInfo.IME_ACTION_GO:          // 이동
-                    case EditorInfo.IME_ACTION_NEXT:      // 다음
-                    case EditorInfo.IME_ACTION_NONE:     // 엔터
-                    case EditorInfo.IME_ACTION_SEARCH:  // 돋보기
-                    case EditorInfo.IME_ACTION_SEND:    // 전송
-                    case EditorInfo.IME_ACTION_UNSPECIFIED:     // 확인
-                        closeKeyboard();
-                        String sNumber = mBudget_etValue.getText().toString();//.replaceAll("\\D", "");
-                        double dChangeVal = .0f;
-                        dChangeVal = getExchangeVal(mNationLab.getCurrencyCodeInEng(), Double.valueOf(sNumber), true);
-                        String strVal = String.format("%.2f", dChangeVal) + " 원";
-                        mBudget_etValue_kor.setText(strVal);
-                        mPurseDatalab.setBudget(dChangeVal);
-
-                        break;
-                }
-                return false;
-            }
-        });
-        mBudget_etValue_kor.setText("");
-        mBudget_etValue_kor.setInputType(0);
-        mBudget_etValue_kor.requestFocus();
-        mBudget_etValue_kor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mBudget_etValue_kor.setText("");
-                mBudget_etValue_kor.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-
-
-                //       mBudget_etValue.setInputType(InputType.TYPE_CLASS_NUMBER);
-                mBudget_etValue_kor.setImeOptions(EditorInfo.IME_ACTION_DONE);
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-                bIsKeyboard = true;
-            }
-        });
-        mBudget_etValue_kor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                // 요기서 입력된 이벤트가 무엇인지 찾아서 실행해 줌
-                switch (actionId) {
-                    case EditorInfo.IME_ACTION_DONE:
-                    case EditorInfo.IME_ACTION_GO:          // 이동
-                    case EditorInfo.IME_ACTION_NEXT:      // 다음
-                    case EditorInfo.IME_ACTION_NONE:     // 엔터
-                    case EditorInfo.IME_ACTION_SEARCH:  // 돋보기
-                    case EditorInfo.IME_ACTION_SEND:    // 전송
-                    case EditorInfo.IME_ACTION_UNSPECIFIED:     // 확인
-                        closeKeyboard();
-                        String sNumber = mBudget_etValue_kor.getText().toString();//.replaceAll("\\D", "");
-                        mPurseDatalab.setBudget(Double.valueOf(sNumber));
-
-                        double dExchangeBudget = .0f;
-                        dExchangeBudget = getExchangeVal(mNationLab.getCurrencyCodeInEng(), mPurseDatalab.getBudget(), false);
-
-                        String strVal = String.format("%.2f", dExchangeBudget) + " " + mNationLab.getCurrencyChar();
-                        mBudget_etValue.setText(strVal);
-
-                        break;
-                }
-                return false;
-            }
-        });
-
-    }
-    private void initInsertLayoutView(View v)
-    {
-        mInsert_ivHeader = (ImageView)v.findViewById(R.id.ivHeader);
-
-
-        mInsert_ivHeader.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    String sItem = "";
-                                                    if(mInsert_tvItemValue.getText().length() > 0 )
-                                                        sItem = mInsert_tvItemValue.getText().toString();
-                                                    double dValue=0;
-                                                    if(mInsert_tvInputValue.getText().length() > 0 )
-                                                        dValue = Double.valueOf(mInsert_tvInputValue.getText().toString());
-                                                    else
-                                                    {
-                                                        changeView(0);
-                                                        closeKeyboard();
-                                                        return ;
-                                                    }
-                                                    String sDate = mInsert_tvDateValue.getText().toString();
-                                                    DateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
-                                                    DateFormat fmNew = new SimpleDateFormat("yyyyMMdd");
-                                                    try {
-                                                        Date newDate = fm.parse(sDate);
-                                                        sDate = fmNew.format(newDate);
-                                                    }
-                                                    catch(Exception e)
-                                                    {
-                                                    }
-                                                    mPurseDatalab.addItem(sItem, sDate, "000000", dValue, mNationLab.getCurrencyCodeInEng());
-                                                    changeView(0);
-                                                    closeKeyboard();
-                                                    saveData();
-                                                    dataToView();
-
-
-                                                }
-                                            }
-        );
-
-        mInsert_ivHeader.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    changeView(0);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });
-        mInsert_tvItemValue = (TextView)v.findViewById(R.id.tv_purse_item_input);
-        mInsert_tvDateValue = (TextView)v.findViewById(R.id.tv_purse_date_input);
-        mInsert_tvInputValue = (TextView)v.findViewById(R.id.tv_purse_value_input);
-
-        mInsert_tvItemTitle = (TextView)v.findViewById(R.id.tv_purse_item_title);
-        mInsert_tvDateTitle = (TextView)v.findViewById(R.id.tv_purse_date_title);
-        mInsert_tvInputTitle = (TextView)v.findViewById(R.id.tv_purse_value_title);
-
-        mInsert_tvItemValue.setText("");
-        mInsert_tvItemValue.setInputType(0);
-        mInsert_tvItemValue.requestFocus();
-        mInsert_tvItemValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mInsert_tvItemValue.setText("");
-                mInsert_tvItemValue.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                mInsert_tvItemValue.setImeOptions(EditorInfo.IME_ACTION_DONE);
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-                bIsKeyboard = true;
-            }
-        });
-        mInsert_tvItemValue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                // 요기서 입력된 이벤트가 무엇인지 찾아서 실행해 줌
-                switch (actionId) {
-                    case EditorInfo.IME_ACTION_DONE:
-                    case EditorInfo.IME_ACTION_NEXT:
-                        closeKeyboard();
-                        return true;
-//                        break;
-                }
-                return false;
-            }
-        });
-
-        GregorianCalendar today = new GregorianCalendar();
-        final int todayYear = today.get(today.YEAR);
-        final int todayMonth = today.get(today.MONTH) + 1;
-        final int todayDay = today.get(today.DAY_OF_MONTH);
-        mInsert_tvDateValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                int nYear = mPurseDatalab.getBeginDate_year();
-
-                int nMonth = mPurseDatalab.getBeginDate_month();
-                int nDay = mPurseDatalab.getBeginDate_day();
-                if ((nYear == 0) || (nMonth == 0) || (nDay == 0)) {
-                    nYear = todayYear;
-                    nMonth = todayMonth;
-                    nDay = todayDay;
-                }
-                DatePickerDialog.OnDateSetListener mDateSetListener =
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-                                String strVal = String.valueOf(year)+ "/" +String.valueOf(monthOfYear+1)+ "/"+String.valueOf(dayOfMonth);
-                                mInsert_tvDateValue.setText(strVal); ;
-
-                            }
-                        };
-                DatePickerDialog alert = new DatePickerDialog(getActivity(), mDateSetListener, nYear, nMonth - 1, nDay);
-                alert.show();
-            }
-        });
-
-        mInsert_tvInputValue.setText("");
-        mInsert_tvInputValue.setInputType(0);
-        mInsert_tvInputValue.requestFocus();
-        mInsert_tvInputValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mInsert_tvInputValue.setText("");
-                mInsert_tvInputValue.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-
-                mInsert_tvInputValue.setImeOptions(EditorInfo.IME_ACTION_DONE);
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-                bIsKeyboard = true;
-            }
-        });
-        mInsert_tvInputValue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                // 요기서 입력된 이벤트가 무엇인지 찾아서 실행해 줌
-                switch (actionId) {
-                    case EditorInfo.IME_ACTION_DONE:
-                    case EditorInfo.IME_ACTION_NEXT:
-
-                        closeKeyboard();
-                        return true;
-//                        break;
-                }
-                return false;
-            }
-        });
+        //LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+  //      mMain_lvBody.setHasFixedSize(true);
+        mMain_lvBody.setLayoutManager(layoutManager);
     }
 
     private void prepareListData() {
@@ -801,14 +303,14 @@ public class PurseFragment extends baseOnebuyFragment {
         try {
             mNationLab.chgCurrency(sCurrncy);
 
-            mtvCurrency.setTextColor(mNationLab.getGraphTextColor());
-            mtvCurrency.setTextColor(mNationLab.getGraphTextColor());
-
-            if((mNationLab.getCurrencyCodeInEng().indexOf("JPY")>=0) || (mNationLab.getCurrencyCodeInEng().indexOf("IDR")>=0) ||
-                    (mNationLab.getCurrencyCodeInEng().indexOf("VND")>=0) || (mNationLab.getCurrencyCodeInEng().indexOf("KHR")>=0))
-                mtvCurrency.setText(mNationLab.getCountryNameInKorean() + " " + mNationLab.getCurrencyCodeInEng() + "(100)");
-            else
-                mtvCurrency.setText(mNationLab.getCountryNameInKorean() + " " + mNationLab.getCurrencyCodeInEng());
+//            mtvCurrency.setTextColor(mNationLab.getGraphTextColor());
+//            mtvCurrency.setTextColor(mNationLab.getGraphTextColor());
+//
+//            if((mNationLab.getCurrencyCodeInEng().indexOf("JPY")>=0) || (mNationLab.getCurrencyCodeInEng().indexOf("IDR")>=0) ||
+//                    (mNationLab.getCurrencyCodeInEng().indexOf("VND")>=0) || (mNationLab.getCurrencyCodeInEng().indexOf("KHR")>=0))
+//                mtvCurrency.setText(mNationLab.getCountryNameInKorean() + " " + mNationLab.getCurrencyCodeInEng() + "(100)");
+//            else
+//                mtvCurrency.setText(mNationLab.getCountryNameInKorean() + " " + mNationLab.getCurrencyCodeInEng());
 
             chgBackground(BasicInfo.InternalPath + BasicInfo.BackgroudPath + mNationLab.getBackgroundFile(), 2);
             if(mBackgroundBitmap==null)
@@ -820,26 +322,9 @@ public class PurseFragment extends baseOnebuyFragment {
             mBar1Bitmap = mNationLab.getPurseBar1Bitmap();
             mBar2Bitmap = mNationLab.getPurseBar2Bitmap();
 
-            mMain_ivHeader1.setImageBitmap(mBar1Bitmap);
-            mMain_ivHeader2.setImageBitmap(mBar2Bitmap);
-
-
-            mBudget_ivHeader.setImageBitmap(mBar1Bitmap);
-            mInsert_ivHeader.setImageBitmap(mBar2Bitmap);
-
-            mMain_tvResultTitle.setBackgroundColor(mNationLab.getPurseTextColor());
-            mMain_tvResultKRWValue.setBackgroundColor(mNationLab.getPurseTextColor2());
-            mMain_tvResuleValueKRWMark.setBackgroundColor(mNationLab.getPurseTextColor());
-            mMain_tvResultValue.setBackgroundColor(mNationLab.getPurseTextColor2());
-            mMain_tvResuleValueMark.setBackgroundColor(mNationLab.getPurseTextColor());
-
-
-            mInsert_tvItemTitle.setBackgroundColor(mNationLab.getPurseTextColor2());
-            mInsert_tvDateTitle.setBackgroundColor(mNationLab.getPurseTextColor());
-            mInsert_tvInputTitle.setBackgroundColor(mNationLab.getPurseTextColor2());
-            mtvConvertedValue.setTextColor(mNationLab.getGraphTextColor());
-            tvSeperator.setBackgroundColor(mNationLab.getGraphTextColor());
-            mtvDate.setTextColor(mNationLab.getGraphTextColor());
+//            mtvConvertedValue.setTextColor(mNationLab.getGraphTextColor());
+      //      tvSeperator.setBackgroundColor(mNationLab.getGraphTextColor());
+//            mtvDate.setTextColor(mNationLab.getGraphTextColor());
             mCallback.saveOptionData();
 
             Log.i(BasicInfo.TAG, "Change Currency: " + mNationLab.getCurrencyCodeInEng());
@@ -901,47 +386,62 @@ public class PurseFragment extends baseOnebuyFragment {
             dataToView();
         }
     }
-    public void dataToView()
+    @Override
+    public void applyData_to_view(int nFragment)
     {
+        switch(nFragment)
+        {
+            case BasicInfo.FRAGMENT_EXCHANGE_PURSE_EDIT:
+            case BasicInfo.FRAGMENT_EXCHANGE_PURSE_INPUT:
+                mDialogPurseInput = null;
+                break;
+            case BasicInfo.FRAGMENT_EXCHANGE_PURSE_BUDGET:
+                mDialogPurseBudget = null;
+                break;
+        }
+        dataToView();
+    }
+    public void dataToView() {
         calcResult();
+        PurseAdapter_2 adapter = new PurseAdapter_2(getContext(),mPurseDatalab.getData(),R.layout.list_purse);
+        adapter.setCallback(this);
 
-        mMainlistAdapter.setListItems(mPurseDatalab.getData());
-        mMainlistAdapter.setCurrencyStr(mNationLab.getCurrencyChar());
-        mMainlistAdapter.notifyDataSetChanged();
+        mMain_lvBody.setAdapter(adapter);
+//        int height = mMain_lvBody.getHeight();
+//        mMain_lvBody.scrollTo(0,height);
 
-        String strVal =  String.format("%.2f",mPurseDatalab.getBudget()) + " 원";
-        mBudget_etValue_kor.setText(strVal);
-        double dExchangeBudget = .0f;
-        dExchangeBudget = getExchangeVal(mNationLab.getCurrencyCodeInEng(), mPurseDatalab.getBudget(), false);
-        strVal =  String.format("%.2f", dExchangeBudget) + " " + mNationLab.getCurrencyChar();
-        mBudget_etValue.setText(strVal);
-        strVal = String.valueOf(mPurseDatalab.getBeginDate_month())+ "/"+String.valueOf(mPurseDatalab.getBeginDate_day());
-        mBudget_tvDate1.setText(strVal);
-        strVal = String.valueOf(mPurseDatalab.getEndDate_month())+ "/"+String.valueOf(mPurseDatalab.getEndDate_day());
-        mBudget_tvDate2.setText(strVal);
-        strVal = String.valueOf(mPurseDatalab.getBeginDate_month())+ "/"+String.valueOf(mPurseDatalab.getBeginDate_day() + " ~ " +
+      //  PurseAdapter_2 adapter = (PurseAdapter_2)mMain_lvBody.getAdapter();
+
+     //   adapter.setListItems(mPurseDatalab.getData());
+    //    adapter.setCurrencyStr(mNationLab.getCurrencyChar());
+   //     adapter.notifyDataSetChanged();
+
+        String strVal = String.valueOf(mPurseDatalab.getBeginDate_month())+ "/"+String.valueOf(mPurseDatalab.getBeginDate_day() + " ~ " +
                 mPurseDatalab.getEndDate_month())+ "/"+String.valueOf(mPurseDatalab.getEndDate_day());
         mMain_tvBudgetDate.setText(strVal);
-        strVal = String.format("%.2f",mPurseDatalab.getBudget()) + " 원";
+        strVal = String.format("%.2f",mPurseDatalab.getBudgetKRW()) + " 원";
         mMain_tvBudgetValue.setText(strVal);
 
         ///////////////////////////////////////////////////////////////////////////////
-        double dResultVal = getExchangeVal(mNationLab.getCurrencyCodeInEng(),mResultVal,false);
+        //
+       // double dResultVal = getExchangeVal(mPurseDatalab.getBudgetCurrency(),mResultValKRW,false);          // 남은 원화의 환율 변환값
 
-        mMain_tvResultKRWValue.setText(String.format("%.2f", mResultVal));
+        ///////////////////////////////////////////////////////////////////////////////
+
+        mMain_tvResultKRWValue.setText(String.format("%.2f", mResultValKRW));
         mMain_tvResuleValueKRWMark.setText("원 ");
-        mMain_tvResultValue.setText(String.format("%.2f", dResultVal));
-        mMain_tvResuleValueMark.setText(mNationLab.getCurrencyChar() + " ");
+        mMain_tvResultValue.setText(String.format("%.2f", mResultVal));
+        mMain_tvResuleValueMark.setText(mNationLab.getCurrencyChar(mPurseDatalab.getBudgetCurrency()) + " ");
 
         double dConvertedVal = .0f;
-        if((mNationLab.getCurrencyCodeInEng().indexOf("JPY")>=0) || (mNationLab.getCurrencyCodeInEng().indexOf("IDR")>=0) ||
-                (mNationLab.getCurrencyCodeInEng().indexOf("VND")>=0) || (mNationLab.getCurrencyCodeInEng().indexOf("KHR")>=0))
-            dConvertedVal= mLiveDatalab.getCurrencyValue(mNationLab.getCurrencyCodeInEng())*100;
+        if((mPurseDatalab.getBudgetCurrency().indexOf("JPY")>=0) || (mPurseDatalab.getBudgetCurrency().indexOf("IDR")>=0) ||
+                (mPurseDatalab.getBudgetCurrency().indexOf("VND")>=0) || (mPurseDatalab.getBudgetCurrency().indexOf("KHR")>=0))
+            dConvertedVal= mLiveDatalab.getCurrencyValue(mPurseDatalab.getBudgetCurrency())*100;
         else
-            dConvertedVal= mLiveDatalab.getCurrencyValue(mNationLab.getCurrencyCodeInEng());
+            dConvertedVal= mLiveDatalab.getCurrencyValue(mPurseDatalab.getBudgetCurrency());
 
-        mtvConvertedValue.setText(String.format("%.2f", dConvertedVal) + " 원");
-        mtvDate.setText(mLiveDatalab.getLiveDate_Time(mNationLab.getCurrencyCodeInEng()) + " (외환은행 기준)");
+//        mtvConvertedValue.setText(String.format("%.2f", dConvertedVal) + " 원");
+//        mtvDate.setText(mLiveDatalab.getLiveDate_Time(mNationLab.getCurrencyCodeInEng()) + " (외환은행 기준)");
 
     }
 
@@ -953,16 +453,29 @@ public class PurseFragment extends baseOnebuyFragment {
         else
             listPurseData.clear();
         double dExchangeVal;
-        double  dTotalVal=.0f;
+        double  dTotalValKRW=.0f;
         for(PurseData p : mPurseDatalab.getData())
         {
             dExchangeVal = p.getValue();
             dExchangeVal = getExchangeVal(p.getCurrencyCode(),dExchangeVal,true);
-            dTotalVal += dExchangeVal;
+            dTotalValKRW += dExchangeVal;
         }
-        mResultVal = mPurseDatalab.getBudget() - dTotalVal;
+        mResultValKRW = mPurseDatalab.getBudgetKRW() - dTotalValKRW;
+        double dTotalAnotherVal = getExchangeVal(mPurseDatalab.getBudgetCurrency(),dTotalValKRW,false);
+        mResultVal = mPurseDatalab.getBudget() - dTotalAnotherVal;
     }
-
+    public void deleteItem(int nPosition)
+    {
+        PurseAdapter_2 adapter = (PurseAdapter_2)mMain_lvBody.getAdapter();
+        delPurseData = (PurseData)adapter.getItem(nPosition);
+        deleteOk_dialog();
+    }
+    public void editItem(int nPosition)
+    {
+        PurseAdapter_2 adapter = (PurseAdapter_2)mMain_lvBody.getAdapter();
+        delPurseData = (PurseData)adapter.getItem(nPosition);
+        changeView(BasicInfo.FRAGMENT_EXCHANGE_PURSE_EDIT);
+    }
 
     private void deleteOk_dialog() {
         AlertDialog.Builder alt_bld = new AlertDialog.Builder(getActivity());
@@ -976,8 +489,8 @@ public class PurseFragment extends baseOnebuyFragment {
                         listPurseData.remove(delPurseData);
                         saveData();
                         dataToView();
-                        mMain_lvBody.clearChoices();
-                        mMainlistAdapter.notifyDataSetChanged();
+                 //      mMain_lvBody.clearChoices();
+                       // mMainlistAdapter.notifyDataSetChanged();
                     }
                 }).setNegativeButton("No",
                 new DialogInterface.OnClickListener() {
@@ -1045,12 +558,6 @@ public class PurseFragment extends baseOnebuyFragment {
 
     private void changeView(int nType)
     {
-        enableDisableViewGroup(mMainLayout,false);
-        enableDisableViewGroup(mBudgetLayout,false);
-        enableDisableViewGroup(mInsertLayout,false);
-        mMainLayout.setVisibility(View.GONE);
-        mBudgetLayout.setVisibility(View.GONE);
-        mInsertLayout.setVisibility(View.GONE);
         mStatusView = nType;
         switch (nType)
         {
@@ -1058,17 +565,47 @@ public class PurseFragment extends baseOnebuyFragment {
                 mMainLayout.setVisibility(View.VISIBLE);
                 enableDisableViewGroup(mMainLayout, true);
                 break;
-            case 1:         // 예산입력
-                mBudgetLayout.setVisibility(View.VISIBLE);
-                enableDisableViewGroup(mBudgetLayout, true);
+            case BasicInfo.FRAGMENT_EXCHANGE_PURSE_BUDGET:         // 예산입력
+                if(mDialogPurseBudget!=null)
+                    break;
+                Bundle args = new Bundle();
+                args.putString("title", "initsearch");
+                args.putInt("type", BasicInfo.FRAGMENT_EXCHANGE_PURSE_BUDGET);
+
+                android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+                mDialogPurseBudget = new PurseBudgetDialogFragment();
+                mDialogPurseBudget.setResultCallback((baseOnebuyFragment.PurseInterface)this);
+                mDialogPurseBudget.setArguments(args);
+                mDialogPurseBudget.show(fm, "hi");
                 break;
-            case 2:         // 지출입력
-                mBudgetLayout.setVisibility(View.VISIBLE);
-                mInsertLayout.setVisibility(View.VISIBLE);
-                enableDisableViewGroup(mBudgetLayout, true);
-                enableDisableViewGroup(mInsertLayout,true);
+            case BasicInfo.FRAGMENT_EXCHANGE_PURSE_INPUT:         // 지출입력
+                if(mDialogPurseInput!=null)
+                    break;
+                args = new Bundle();
+                args.putString("title", "initsearch");
+                args.putInt("type", BasicInfo.FRAGMENT_EXCHANGE_PURSE_INPUT);
+
+                fm = getActivity().getSupportFragmentManager();
+                mDialogPurseInput = new PurseInputDialogFragment();
+                mDialogPurseInput.setResultCallback((baseOnebuyFragment.PurseInterface) this);
+                mDialogPurseInput.setArguments(args);
+
+                mDialogPurseInput.show(fm, "hi");
+
                 break;
-            case 3:         //
+            case BasicInfo.FRAGMENT_EXCHANGE_PURSE_EDIT:         // 입력 내용 변경
+                if(mDialogPurseInput!=null)
+                    break;
+                args = new Bundle();
+                args.putString("title", "initsearch");
+                args.putInt("type", BasicInfo.FRAGMENT_EXCHANGE_PURSE_EDIT);
+                args.putParcelable("editdata", delPurseData);
+
+                fm = getActivity().getSupportFragmentManager();
+                mDialogPurseInput = new PurseInputDialogFragment();
+                mDialogPurseInput.setResultCallback((baseOnebuyFragment.PurseInterface)this);
+                mDialogPurseInput.setArguments(args);
+                mDialogPurseInput.show(fm, "hi");
                 break;
 
         }
@@ -1093,6 +630,7 @@ public class PurseFragment extends baseOnebuyFragment {
             }
         }
     }
+    /*
     public void setMenuButton(View v)
     {
         mButtonMenu = (MyMenuBtn)v.findViewById(R.id.btnMenu);
@@ -1110,6 +648,7 @@ public class PurseFragment extends baseOnebuyFragment {
             }
         });
     }
+    */
     public void startAnimation()
     {
         AnimationThread mThreadRefresh = new AnimationThread( getActivity(), mHandlerHttp);
@@ -1171,31 +710,66 @@ public class PurseFragment extends baseOnebuyFragment {
         }
 
     }
-    /*
-    public void makeNationDialog()
+
+
+
+    public void OnDialogOkListener(int nType, String sValue)
     {
-        try {
-            if(getActivity()!=null) {
-                //               /*
-                if(NationFragment.m_bRunning == false) {
-                    android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-                    NationFragment nf = new NationFragment();
-                    nf.setCallFragmentId(2);
-                    String sz = "hi";
-                    nf.show(fm, sz);
-                }
+        if(nType == BasicInfo.FRAGMENT_EXCHANGE_PURSE)
+        {
+            chgCurrency(sValue);
+            saveData();
+            dataToView();
+        }
+        if(nType == BasicInfo.FRAGMENT_EXCHANGE_PURSE_BUDGET)
+        {
+            if(mDialogPurseBudget != null)
+            {
+                mDialogPurseBudget.changeCurrency(sValue);
             }
         }
-        catch(Exception e)
+        else if((nType == BasicInfo.FRAGMENT_EXCHANGE_PURSE_INPUT) || (nType == BasicInfo.FRAGMENT_EXCHANGE_PURSE_EDIT))
         {
-            Log.e(BasicInfo.TAG,"makeDialog Err");
+            if(mDialogPurseInput != null)
+            {
+                mDialogPurseInput.changeCurrency(sValue);
+            }
+        }
+
+
+
+
+    }
+    private void playAudio(String url) throws Exception
+    {
+
+
+        killMediaPlayer();
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setDataSource(url);
+        mediaPlayer.prepare();
+        mediaPlayer.setVolume(0.1f,0.1f);
+        mediaPlayer.start();
+    }
+    private void killMediaPlayer()
+    {
+        if(mediaPlayer != null) {
+            try
+            {
+                mediaPlayer.release();
+            } catch (Exception e)
+            {
+            }
         }
     }
-    */
-    public void OnDialogOkListener( String sValue)
+    private void calcBudgetOldVer()
     {
-        chgCurrency(sValue);
-        saveData();
-        dataToView();
+        double dBudget = mPurseDatalab.getBudget();
+        double dBudgetKr = mPurseDatalab.getBudgetKRW();
+        if((dBudgetKr!=.0f) && (dBudget == .0f))
+        {
+            dBudget = getExchangeVal(mPurseDatalab.getBudgetCurrency(),dBudgetKr,false);
+        }
+        mPurseDatalab.setBudget(dBudget);
     }
 }

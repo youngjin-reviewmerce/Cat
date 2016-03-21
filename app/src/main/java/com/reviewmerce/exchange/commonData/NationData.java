@@ -271,7 +271,7 @@ public class NationData{
     {
 //        if(bitmapGraphBubbleFile==null)
         {
-            String sFilename = BasicInfo.InternalPath + "image/bubble/" + mGraphBubbleFile;
+            String sFilename = BasicInfo.InternalPath +  mGraphBubbleFile;
             try {
                 if (bitmapGraphBubbleFile != null) {
                     bitmapGraphBubbleFile.recycle();

@@ -5,19 +5,27 @@
     android:orientation="vertical"
     android:clickable="true"
     android:id="@+id/purseLayout_main"
+    android:paddingTop="60dp"
     >
+    <ImageView
+        android:id="@+id/ivCat"
+        android:layout_height="26dp"
+        android:layout_width="20dp"
+        android:src="@drawable/icon_cat"
+        android:layout_gravity="right"
+        android:scaleType="fitXY"/>
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         <ImageView
-            android:id="@+id/ivHeader1"
-            android:layout_height="30dp"
-            android:layout_width="fill_parent"
-            android:src="@drawable/header_one"
-            android:scaleType="fitXY"/>
+        android:id="@+id/ivHeader1"
+        android:layout_height="24dp"
+        android:layout_width="fill_parent"
+        android:background="@color/shippingMainTheme"
+        android:scaleType="fitXY"/>
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="24dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_weight="0.25"
             android:text="@string/purse_topheader"
@@ -28,7 +36,7 @@
             android:textColor="#ffffff" />
         <TextView
             android:layout_width="40dp"
-            android:layout_height="30dp"
+            android:layout_height="24dp"
             android:id="@+id/tvHeaderValue1"
             android:layout_gravity="right"
             android:layout_weight="0.02"
@@ -36,23 +44,27 @@
             android:text="+"
             android:textColor="#ffffffff"
             android:textStyle="bold"
-            android:textSize="24dp" />
+            android:textSize="20dp"
+             />
     </FrameLayout>
     <TableLayout
         android:id="@+id/TableLayout_1"
-        android:stretchColumns="0,1"
+        android:stretchColumns="1,2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffeeeeee"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         >
         <TableRow>
             <TextView
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:background="#ffffffff"
+                />
+            <TextView
                 android:id="@+id/tv_purse_budget_date"
-                android:layout_height="36dp"
+                android:layout_height="32dp"
                 android:layout_width="wrap_content"
                 android:text=""
                 android:textSize="18dp"
@@ -65,7 +77,7 @@
             <TextView
                 android:id="@+id/tv_purse_budget_value"
                 android:layout_width="60dp"
-                android:layout_height="36dp"
+                android:layout_height="32dp"
                 android:text="10/10"
                 android:textSize="18dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -73,6 +85,11 @@
                 android:singleLine="true"
                 android:maxLength="30"
                 android:gravity="right|center_vertical"/>
+            <TextView
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:background="#ffffffff"
+                />
          </TableRow>
 
     </TableLayout>
@@ -81,13 +98,13 @@
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/ivHeader2"
-            android:layout_height="30dp"
+            android:layout_height="24dp"
             android:layout_width="fill_parent"
-            android:src="@drawable/header_one"
+            android:background="@color/shippingMainTheme"
             android:scaleType="fitXY"/>
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="24dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_weight="0.25"
             android:text="지출"
@@ -98,7 +115,7 @@
             android:textColor="#ffffff" />
         <TextView
             android:layout_width="40dp"
-            android:layout_height="30dp"
+            android:layout_height="24dp"
             android:id="@+id/tvHeaderValue2"
             android:layout_gravity="right"
             android:layout_weight="0.02"
@@ -106,20 +123,21 @@
             android:textColor="#ffffffff"
             android:gravity="top"
             android:textStyle="bold"
-            android:textSize="24dp"
+            android:textSize="20dp"
             />
 
+
     </FrameLayout>
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/tv_purse_listview"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="240dp"
         android:weightSum="1"
         android:orientation="horizontal"
         android:paddingTop="10dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_weight="3" />
+        android:layout_weight="3"
+        />
+
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
@@ -133,25 +151,26 @@
         android:layout_height="match_parent"
         android:background="#ffeeeeee"
         android:shrinkColumns="0"
-
+        android:layout_marginTop="4dp"
         >
         <TableRow>
          <TextView
             android:id="@+id/tv_purse_result_title"
             android:layout_width="80dp"
-            android:layout_height="60dp"
+            android:layout_height="48dp"
             android:text="남은 금액"
             android:textSize="16dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
              android:textColor="#ffffff"
-            android:background="#ff7449"
+            android:background="@color/shippingMainTheme"
             android:singleLine="true"
             android:maxLength="30"
+
             android:gravity="center_horizontal|center_vertical"/>
             <TableLayout
                 android:id="@+id/TableLayout_3_1"
                 android:stretchColumns="0"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:background="#ffeeeeee"
                 android:shrinkColumns="0"
@@ -161,71 +180,53 @@
                     <TextView
                         android:id="@+id/tv_purse_result_value_krw"
                         android:layout_width="20dp"
-                        android:layout_height="30dp"
+                        android:layout_height="24dp"
                         android:text="10000 원"
                         android:textSize="16dp"
                         android:gravity="right|center_vertical"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="#ffffff"
-                        android:background="#cfffb96e"
+                        android:background="@color/shippingMainTheme"
                         android:singleLine="true"
                         android:layout_column="0" />
 
                     <TextView
                         android:id="@+id/tv_purse_result_value_krw_mark"
                         android:layout_width="60dp"
-                        android:layout_height="30dp"
+                        android:layout_height="24dp"
                         android:text="10000 원"
                         android:textSize="16dp"
                         android:gravity="center|center_vertical"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="#ffffff"
-                        android:background="#ffffb96e"
+                        android:background="@color/shippingMainTheme"
                         android:singleLine="true"
                         android:layout_column="1" />
                 </TableRow>
-                <TableRow>
-                    <TextView
-                        android:layout_height="2dp"
-                        android:gravity="right|center_vertical"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="#ffffff"
-                        android:background="#ffffffff"
-                        android:singleLine="true"
-                        android:layout_column="0" />
 
-                    <TextView
-                        android:layout_height="2dp"
-                        android:gravity="right|center_vertical"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="#ffffff"
-                        android:background="#ffffffff"
-                        android:singleLine="true"
-                        android:layout_column="1" />
-                </TableRow>
                 <TableRow>
                     <TextView
                         android:id="@+id/tv_purse_result_value"
                         android:layout_width="20dp"
-                        android:layout_height="30dp"
+                        android:layout_height="24dp"
                         android:text="10000 원"
                         android:textSize="16dp"
                         android:gravity="right|center_vertical"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="#ffffff"
-                        android:background="#8fffb96e"
+                        android:background="@color/shippingMainTheme"
                         android:singleLine="true"
                         android:layout_column="0" />
                     <TextView
                         android:id="@+id/tv_purse_result_value_mark"
                         android:layout_width="20dp"
-                        android:layout_height="30dp"
+                        android:layout_height="24dp"
                         android:text="10000 원"
                         android:textSize="16dp"
                         android:gravity="center|center_vertical"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="#ffffff"
-                        android:background="#afffb96e"
+                        android:background="@color/shippingMainTheme"
                         android:singleLine="true"
                         android:layout_column="1" />
                 </TableRow>

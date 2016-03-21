@@ -1,7 +1,6 @@
 package com.reviewmerce.exchange.Fragment;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
@@ -13,13 +12,13 @@ import android.os.Message;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,14 +30,12 @@ import com.google.android.gms.analytics.Tracker;
 import com.reviewmerce.exchange.AnalyticsApplication;
 import com.reviewmerce.exchange.ListView.BankAdapter;
 import com.reviewmerce.exchange.ListView.BankExchangeAdapter;
-import com.reviewmerce.exchange.MainActivity;
+import com.reviewmerce.exchange.Activity.MainActivity;
 import com.reviewmerce.exchange.commonData.BankExchangeItem;
 import com.reviewmerce.exchange.BasicInfo;
 import com.reviewmerce.exchange.ConnectMonitorThread_v2;
 import com.reviewmerce.exchange.GlobalVar;
 import com.reviewmerce.exchange.R;
-import com.reviewmerce.exchange.ListView.CurrencyAdapter;
-import com.reviewmerce.exchange.commonData.CurrencyItem;
 import com.reviewmerce.exchange.custom.MyMenuBtn;
 import com.reviewmerce.exchange.publicClass.BankDataLab;
 import com.reviewmerce.exchange.publicClass.NationDataLab;
@@ -58,8 +55,7 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
     ListView mListView;
     private ImageView mButtonRefresh;
     MyMenuBtn mButtonMenu;
-    TextView tvInfo,tvAd, tvSeperator;
-    Rect mNationSelectRect;
+    TextView tvInfo,tvAd;//, tvSeperator;
     private Button mBtnNationSelect;
 //    private int m_nPreTouchPosX = 0;
     private Handler mHandlerHttp;                   // API 통신 쓰레드 핸들
@@ -71,10 +67,8 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
     BankDataLab mBankDataLab;
     private LinearLayout mLayout;
     View headerView;
-    ImageView ivHeader1;
-    ImageView ivHeader2;
-    ImageView ivHeader3;
 
+    private FrameLayout mTopLayout;
     private ImageView mBackgroundView;
     private Bitmap mBackgroundBitmap=null;
 
@@ -94,13 +88,13 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
         setCurrencyType(v);
         setBankdataList(v);
         setMenuButton(v);
-        mNationSelectRect = new Rect();
+  //      mNationSelectRect = new Rect();
         mBtnNationSelect = (Button)v.findViewById(R.id.btnNationSelect);
-        tvInfo = (TextView)v.findViewById(R.id.tvInfo);
+        tvInfo = (TextView)v.findViewById(R.id.tvDate);
         tvAd = (TextView)v.findViewById(R.id.tvAd);
-        tvSeperator = (TextView)v.findViewById(R.id.tvSeperator);
+   //     tvSeperator = (TextView)v.findViewById(R.id.tvSeperator);
        // mLayout = (LinearLayout)v.findViewById(R.id.mainLayout_bank);
-        mBackgroundView = (ImageView)v.findViewById(R.id.ivScreen_bank);
+        mBackgroundView = (ImageView)v.findViewById(R.id.ivScreen_graph);
         mButtonRefresh = (ImageView) v.findViewById(R.id.btnRefresh);
         mButtonRefresh.setScaleType(ImageView.ScaleType.FIT_CENTER);
         mButtonRefresh.setImageResource(R.drawable.ic_refresh1);
@@ -108,7 +102,7 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
                                               @Override
                                               public void onClick(View v) {
                                                   Boolean bWifi = NetworkInfo.IsWifiAvailable(getActivity());
-                                                  if((mGlobalVar.getNetworkMode()== false) && (bWifi == false)){
+                                                  if ((mGlobalVar.getNetworkMode() == false) && (bWifi == false)) {
                                                       AlertDialog.Builder alt_bld = new AlertDialog.Builder(getActivity());
                                                       String sMsg = String.format("모바일 데이터를 사용하지 않도록 설정되어 있습니다. 그래도 모바일 데이터를 사용 하시겠습니까?");
                                                       alt_bld.setMessage(sMsg).setCancelable(
@@ -126,13 +120,35 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
                                                                   }
                                                               });
                                                       alt_bld.show();
-                                                  }
-                                                  else
+                                                  } else
                                                       refresh();
 
                                               }
                                           }
         );
+        mTopLayout = (FrameLayout)v.findViewById(R.id.topLayout_Framelayout);
+        mTopLayout.setOnClickListener(new View.OnClickListener(){
+
+                                          @Override
+                                          public void onClick(View v) {
+                                              mCallback.makeNationDialog(BasicInfo.FRAGMENT_EXCHANGE_BANK);
+                                          }
+                                      }
+        );
+        mBtnNationSelect.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                mCallback.makeNationDialog(BasicInfo.FRAGMENT_EXCHANGE_BANK);
+            }
+        });
+        mBackgroundView.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                mCallback.makeNationDialog(BasicInfo.FRAGMENT_EXCHANGE_BANK);
+            }
+        });
         LinearLayout linearLayout = (LinearLayout)v.findViewById(R.id.bankMainLinear);
         linearLayout.setOnTouchListener(touchMainListener);
         /*
@@ -217,21 +233,13 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 int nTouchPosX = (int) event.getX();
 
-                if (nTouchPosX < m_nPreTouchPosX - BasicInfo.g_nMovePos)   // 오른쪽
+                if (nTouchPosX < m_nPreTouchPosX - BasicInfo.g_nMovePos)   // 오른쪽 -> 왼쪽
                 {
                     //                     recycleView(mLayout);
-                    mCallback.chgFragment(1, 1);
+                    mCallback.chgFragment(BasicInfo.FRAGMENT_MOVE, 1);
                 } else if (nTouchPosX > m_nPreTouchPosX + BasicInfo.g_nMovePos) {
                     //                       recycleView(mLayout);
-                    mCallback.chgFragment(1, -1);
-                }
-                else
-                {
-                    mBtnNationSelect.getHitRect(mNationSelectRect);
-                    if((int)event.getY() <= mNationSelectRect.bottom )
-                    {
-                        mCallback.makeNationDialog(1);
-                    }
+                    mCallback.chgFragment(BasicInfo.FRAGMENT_MOVE, -1);
                 }
                 m_nPreTouchPosX = nTouchPosX;
             }
@@ -239,6 +247,11 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
         }
 
     };
+    @Override
+    public void onResume() {
+        mCallback.chgBottombar(BasicInfo.FRAGMENT_EXCHANGE_BANK,"Bank");
+        super.onResume();
+    }
     public void setValue()
     {
         mBankDataLab.sortToSortedData();
@@ -265,14 +278,12 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
         mBankAdapter = new BankAdapter(getActivity());
         headerView = getActivity().getLayoutInflater().inflate(R.layout.fragment_header_bank,null,false);
 
-        ivHeader1 = (ImageView)headerView.findViewById(R.id.ivHeaderBank);
-        ivHeader2 = (ImageView)headerView.findViewById(R.id.ivHeaderValue);
-        ivHeader3 = (ImageView)headerView.findViewById(R.id.ivHeaderIndex);
+
         LinearLayout layout = (LinearLayout)v.findViewById(R.id.bankheaderLayout);
         //   layout.setBackgroundColor();
        //headerView.setBackgroundColor(mGlobalVar.getGraphColor());
   //      headerView.setBackgroundResource( R.drawable.header);
-        mListView.addHeaderView(headerView);
+       // mListView.addHeaderView(headerView);
 
         mListView.setAdapter(mBankAdapter);
 
@@ -294,61 +305,61 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
 
     public void setCurrencyType(View v)
     {
-        mButtonCurrencyType = (TextView)v.findViewById(R.id.btnCurrency);
+        mButtonCurrencyType = (TextView)v.findViewById(R.id.tvCurrency);
 
-        mButtonCurrencyType.setOnClickListener(new View.OnClickListener() {
-                                                   @Override
-                                                   public void onClick(View v) {
-                                                       /*
-                                                       if(bDoingChgCurrency==false)
-                                                       {
-                                                           bDoingChgCurrency = true;
-                                                           final CurrencyAdapter adapter = mNationLab.getCurrencyAdapter(getActivity());
-                                                           AlertDialog.Builder alert =
-                                                                   new AlertDialog.Builder(getActivity()).//setView(dialogView).
-                                                                           setAdapter(adapter, new DialogInterface.OnClickListener() {
-                                                                       @Override
-                                                                       public void onClick(DialogInterface dialog, int which) {
-                                                                           CurrencyItem item = (CurrencyItem) (adapter.getItem(which));
-                                                                           chgCurrency(item.getData(0));
-
-                                                                           int nCount = 0;
-                                                                           nCount = mBankDataLab.loadData();
-                                                                           if (nCount > 0) {
-                                                                               setValue();
-                                                                           }
-                                                                           Boolean bWifi = NetworkInfo.IsWifiAvailable(getActivity());
-                                                                           if ((bWifi == true) || (mGlobalVar.getNetworkMode())) {
-                                                                               refresh();
-                                                                           }
-                                                                           bDoingChgCurrency = false;
-
-                                                                       }
-                                                                   });
-                                                           ;
-                                                           alert.setOnKeyListener(new Dialog.OnKeyListener() {
-
-                                                               @Override
-                                                               public boolean onKey(DialogInterface arg0, int keyCode,
-                                                                                    KeyEvent event) {
-                                                                   // TODO Auto-generated method stub
-                                                                   if (keyCode == KeyEvent.KEYCODE_BACK) {
-                                                                       bDoingChgCurrency = false;
-                                                                       return false;
-
-                                                                   }
-                                                                   return true;
-                                                               }
-                                                           });
-                                                           alert.show();
-
-                                                       }
-                                                           */
-                                                       mCallback.makeNationDialog(1);
-//*/
-                                                   }
-                                               }
-        );
+//        mButtonCurrencyType.setOnClickListener(new View.OnClickListener() {
+//                                                   @Override
+//                                                   public void onClick(View v) {
+//                                                       /*
+//                                                       if(bDoingChgCurrency==false)
+//                                                       {
+//                                                           bDoingChgCurrency = true;
+//                                                           final CurrencyAdapter adapter = mNationLab.getCurrencyAdapter(getActivity());
+//                                                           AlertDialog.Builder alert =
+//                                                                   new AlertDialog.Builder(getActivity()).//setView(dialogView).
+//                                                                           setAdapter(adapter, new DialogInterface.OnClickListener() {
+//                                                                       @Override
+//                                                                       public void onClick(DialogInterface dialog, int which) {
+//                                                                           CurrencyItem item = (CurrencyItem) (adapter.getItem(which));
+//                                                                           chgCurrency(item.getData(0));
+//
+//                                                                           int nCount = 0;
+//                                                                           nCount = mBankDataLab.loadData();
+//                                                                           if (nCount > 0) {
+//                                                                               setValue();
+//                                                                           }
+//                                                                           Boolean bWifi = NetworkInfo.IsWifiAvailable(getActivity());
+//                                                                           if ((bWifi == true) || (mGlobalVar.getNetworkMode())) {
+//                                                                               refresh();
+//                                                                           }
+//                                                                           bDoingChgCurrency = false;
+//
+//                                                                       }
+//                                                                   });
+//                                                           ;
+//                                                           alert.setOnKeyListener(new Dialog.OnKeyListener() {
+//
+//                                                               @Override
+//                                                               public boolean onKey(DialogInterface arg0, int keyCode,
+//                                                                                    KeyEvent event) {
+//                                                                   // TODO Auto-generated method stub
+//                                                                   if (keyCode == KeyEvent.KEYCODE_BACK) {
+//                                                                       bDoingChgCurrency = false;
+//                                                                       return false;
+//
+//                                                                   }
+//                                                                   return true;
+//                                                               }
+//                                                           });
+//                                                           alert.show();
+//
+//                                                       }
+//                                                           */
+//                                                       mCallback.makeNationDialog(BasicInfo.FRAGMENT_EXCHANGE_BANK);
+////*/
+//                                                   }
+//                                               }
+//        );
     }
     public void chgCurrency(String sCurrency)
     {
@@ -358,7 +369,7 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
             //mLayout.setBackgroundResource(GlobalVar.mBackgroundId);
             mButtonCurrencyType.setTextColor(mNationLab.getGraphTextColor());
             mButtonExchangeType.setTextColor(mNationLab.getGraphTextColor());
-            tvSeperator.setBackgroundColor(mNationLab.getGraphTextColor());
+ //          tvSeperator.setBackgroundColor(mNationLab.getGraphTextColor());
             tvAd.setTextColor(mNationLab.getGraphTextColor());
             if((mNationLab.getCurrencyCodeInEng().indexOf("JPY")>=0) || (mNationLab.getCurrencyCodeInEng().indexOf("IDR")>=0) ||
                     (mNationLab.getCurrencyCodeInEng().indexOf("VND")>=0) || (mNationLab.getCurrencyCodeInEng().indexOf("KHR")>=0))
@@ -378,9 +389,9 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
             mBackgroundView.setImageBitmap(mBackgroundBitmap);
 
             Bitmap bmp = mNationLab.getPurseBar1Bitmap();
-            ivHeader1.setImageBitmap(bmp);
-            ivHeader2.setImageBitmap(bmp);
-            ivHeader3.setImageBitmap(bmp);
+ //           ivHeader1.setImageBitmap(bmp);
+ //           ivHeader2.setImageBitmap(bmp);
+ //           ivHeader3.setImageBitmap(bmp);
 
             mCallback.saveOptionData();
 
@@ -428,7 +439,7 @@ public class BankFragment extends baseOnebuyFragment implements AdapterView.OnIt
     }
     public void setExchangeType(View v)
     {
-        mButtonExchangeType = (TextView)v.findViewById(R.id.btnExchangeType);
+        mButtonExchangeType = (TextView)v.findViewById(R.id.tvConverted_value);
         mButtonExchangeType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

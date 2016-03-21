@@ -1,0 +1,147 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/mainLayout_shipping"
+    android:background="#00000000"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/shipping_scrollView"
+
+        >
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/catBackgroundColor"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+                <ImageView
+                    android:layout_width="160dp"
+                    android:layout_height="80dp"
+                    android:text="Hot Deal!!!"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/shipping_title"
+                    android:layout_marginTop="50dp"
+                    android:id="@+id/shipping_titleImage"
+                    android:textColor="#ffffff" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_marginTop="90dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:id="@+id/top_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:id="@+id/shipping_midTitle"
+                    android:text="연관상품"
+                    android:gravity="center_vertical"
+                    android:textAlignment="center"
+                    android:background="@color/shippingMainTheme"
+                    android:paddingTop="4dp"
+                    android:textColor="#ffffff" />
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/bot_recyclerview"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="4dp"
+                    />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/bot_recyclerview_searched"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="4dp"
+                        android:visibility="gone"
+                        />
+                </FrameLayout>
+            </LinearLayout>
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/Layout_1_1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="160dp"
+
+                >
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="#ffffffff"
+                    >
+                    <ImageButton
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:text="search"
+                        android:id="@+id/searchBar_ibSearch"
+                        android:visibility="visible"
+                        android:scaleType="fitCenter"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:layout_weight="1"
+                        android:background="#ffffffff"
+
+                        android:src="@drawable/icon_search_black"
+
+                        />
+                </FrameLayout>
+
+                <com.reviewmerce.exchange.custom.WrapperEditText
+                    android:id="@+id/ev_edit_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:text=""
+                    android:textSize="12dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:background="#ffffffff"
+                    android:gravity="center_vertical|left"
+                    android:width="110dp"
+                    android:singleLine="true"
+                    android:maxLength="18"
+                    android:typeface="sans"
+                    android:layout_weight="9"
+                    android:textCursorDrawable="@drawable/black_cursor"
+                    />
+
+            </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/search_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="224dp"
+                />
+        </FrameLayout>
+    </ScrollView>
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="34dp"
+        android:id="@+id/shipping_btnTop"
+        android:src="@drawable/icon_top"
+
+        android:scaleType="fitXY"
+        android:layout_gravity="right|bottom"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#00ffffff"
+        />
+</FrameLayout>

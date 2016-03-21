@@ -27,7 +27,7 @@ import android.widget.Toast;
 import com.reviewmerce.exchange.BasicInfo;
 import com.reviewmerce.exchange.GlobalVar;
 import com.reviewmerce.exchange.ListView.CurrencyAdapter;
-import com.reviewmerce.exchange.MainActivity;
+import com.reviewmerce.exchange.Activity.MainActivity;
 import com.reviewmerce.exchange.R;
 import com.reviewmerce.exchange.commonData.Caculator;
 import com.reviewmerce.exchange.commonData.CurrencyItem;

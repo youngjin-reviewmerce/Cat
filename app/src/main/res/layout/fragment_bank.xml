@@ -3,31 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@color/catBackgroundColor"
     tools:context="com.reviewmerce.exchange.BankActivityFragment"
     android:clickable="true"
     android:id="@+id/mainLayout_bank"
     >
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:id="@+id/btnNationSelect"
-        android:background="#00000000"
-        />
-    <ImageView
-        android:id="@+id/ivScreen_bank"
-        android:layout_height="640dp"
-        android:layout_width="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:scaleType="fitXY"/>
 
-    <ImageView
-        android:id="@+id/ivScreen_graph"
-        android:layout_height="640dp"
-        android:layout_width="match_parent"
-        android:scaleType="fitXY"
-        android:layout_gravity="center_horizontal"/>
-    >
     <LinearLayout
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
@@ -39,75 +20,8 @@
         android:screenOrientation="portrait"
         android:id="@+id/bankMainLinear"
         >
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:orientation="horizontal"
-        android:id="@+id/topLayout"
-        android:layout_marginTop="10dp"
-        >
-        <com.reviewmerce.exchange.custom.MyMenuBtn
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/btnMenu"
-            android:layout_marginTop="5dp" />
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/btnRefresh"
-            android:layout_gravity="right" />
-
-    </FrameLayout>
-    <LinearLayout
-        android:id="@+id/headerLayout"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginTop="110dp"
-        android:layout_gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/btnCurrency"
-            android:layout_centerHorizontal="true"
-            android:layout_height="24dp"
-            android:layout_width="wrap_content"
-            android:textSize="16dp"
-            android:textColor="#ff0066b4"
-            android:textStyle="bold"
-            android:layout_gravity="center" />
-        <TextView
-            android:layout_height="1dp"
-            android:layout_width="14dp"
-            android:layout_gravity="center"
-            android:background="#ffff0000"
-            android:layout_marginTop="5dp"
-            android:id="@+id/tvSeperator"
-            />
-        <TextView
-            android:id="@+id/btnExchangeType"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textSize="16dp"
-            android:textColor="#ff0066b4"
-            android:gravity="center_horizontal"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_gravity="center"
-            android:textStyle="bold"
-            android:layout_marginTop="6dp"
-            android:text="123" />
-
-        <TextView
-            android:id="@+id/tvInfo"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textSize="10dp"
-            android:textColor="#ff0066b4"
-            android:text=""
-            android:gravity="center_horizontal"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_gravity="center" />
-
-    </LinearLayout>
+        <include layout="@layout/app_top_layout" />
+        <include layout="@layout/fragment_header_bank"/>
         <ListView
             android:id="@+id/listBank"
             android:layout_width="match_parent"
@@ -115,8 +29,8 @@
             android:weightSum="1"
             android:orientation="horizontal"
             android:paddingTop="0dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_weight="0.8"
             android:fastScrollEnabled="false" />
 
